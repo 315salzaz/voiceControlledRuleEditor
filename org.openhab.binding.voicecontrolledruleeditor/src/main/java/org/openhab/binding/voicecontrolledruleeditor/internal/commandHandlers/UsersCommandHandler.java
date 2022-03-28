@@ -9,36 +9,32 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ru
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ruleInternals.RuleEditingController;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
 import org.openhab.core.automation.RuleRegistry;
-import org.openhab.core.voice.VoiceManager;
 
 public class UsersCommandHandler {
 
     private List<UserInformation> userInformations;
-    private VoiceManager voiceManager;
 
     private static UsersCommandHandler instance;
 
-    private static ICommandHandler createHandler(HandleCommandResult handleCommandResult, VoiceManager voiceManager,
-            RuleRegistry ruleRegistry) {
+    private static ICommandHandler createHandler(HandleCommandResult handleCommandResult, RuleRegistry ruleRegistry) {
         BaseHandlerState newHandlerState = handleCommandResult.getBaseHandlerState();
         switch (newHandlerState) {
             case ADDING_RULE:
-                return new RuleAddingHandler(voiceManager, ruleRegistry);
+                return new RuleAddingHandler(ruleRegistry);
             case RENAMING_RULE:
-                return new RuleRenamingHandler(voiceManager, ruleRegistry);
+                return new RuleRenamingHandler(ruleRegistry);
             case DELETING_RULE:
             case EDITING_RULE:
-                if(!handleCommandResult.getArg().isEmpty())
-                    return new RuleEditingController(voiceManager, ruleRegistry, handleCommandResult.getArg());
-                return new RuleEditingController(voiceManager, ruleRegistry);
+                if (!handleCommandResult.getArg().isEmpty())
+                    return new RuleEditingController(ruleRegistry, handleCommandResult.getArg());
+                return new RuleEditingController(ruleRegistry);
             default:
-                return new DefaultController(voiceManager);
+                return new DefaultController();
         }
     }
 
-    private UsersCommandHandler(VoiceManager voiceManager) {
+    private UsersCommandHandler() {
         this.userInformations = new ArrayList<UserInformation>();
-        this.voiceManager = voiceManager;
     }
 
     private UserInformation findUserInformation(String deviceIdentifier) {
@@ -47,22 +43,21 @@ public class UsersCommandHandler {
                 return instance.userInformations.get(i);
         }
 
-        var newUserInformation = new UserInformation(deviceIdentifier, instance.voiceManager);
+        var newUserInformation = new UserInformation(deviceIdentifier);
         instance.userInformations.add(newUserInformation);
         return newUserInformation;
     }
 
-    public static void handleUserCommand(String commandString, String deviceIdentifier, VoiceManager voiceManager,
-            RuleRegistry ruleRegistry) {
+    public static void handleUserCommand(String commandString, String deviceIdentifier, RuleRegistry ruleRegistry) {
         if (instance == null) {
-            instance = new UsersCommandHandler(voiceManager);
+            instance = new UsersCommandHandler();
         }
 
         var userInformation = instance.findUserInformation(deviceIdentifier);
 
-        var newBaseHandlerState = userInformation.getCommandHandler().handleCommand(commandString);
+        var newBaseHandlerState = userInformation.getCommandHandler().doHandleCommand(commandString);
         if (newBaseHandlerState != null)
-            userInformation.setCommandHandler(createHandler(newBaseHandlerState, voiceManager, ruleRegistry));
+            userInformation.setCommandHandler(createHandler(newBaseHandlerState, ruleRegistry));
     }
 
     public static void activateFailSafe() {

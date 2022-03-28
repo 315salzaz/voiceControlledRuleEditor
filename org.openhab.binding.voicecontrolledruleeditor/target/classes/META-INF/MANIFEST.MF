@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Automatic-Module-Name: org.openhab.binding.voicecontrolledruleeditor
-Bnd-LastModified: 1647464864193
+Bnd-LastModified: 1648499390815
 Bundle-Description: This project contains the official add-ons of open
  HAB
 Bundle-Developers: openhab;email="info@openhab.org";name=openHAB;organ
@@ -22,28 +22,39 @@ Bundle-SCM: url="https://github.com/openhab/openhab-addons/org.openhab
  ding.voicecontrolledruleeditor",tag=HEAD
 Bundle-SymbolicName: org.openhab.binding.voicecontrolledruleeditor
 Bundle-Vendor: openHAB.org
-Bundle-Version: 3.3.0.202203162107
+Bundle-Version: 3.3.0.202203282029
 Created-By: 11.0.14 (Azul Systems, Inc.)
-Import-Package: org.openhab.core.automation,org.openhab.core.automatio
- n.util,org.openhab.core.common.registry,org.openhab.core.thing,org.op
- enhab.core.thing.binding,org.openhab.core.types,org.openhab.core.voic
- e
+Import-Package: org.openhab.core,org.openhab.core.audio,org.openhab.co
+ re.automation,org.openhab.core.automation.util,org.openhab.core.commo
+ n.registry,org.openhab.core.config.core,org.openhab.core.items,org.op
+ enhab.core.thing,org.openhab.core.thing.binding,org.openhab.core.type
+ s,org.openhab.core.voice
 Private-Package: OH-INF.binding,OH-INF.i18n,OH-INF.thing,org.openhab.b
  inding.voicecontrolledruleeditor.internal,org.openhab.binding.voiceco
  ntrolledruleeditor.internal.commandHandlers,org.openhab.binding.voice
  controlledruleeditor.internal.commandHandlers.ruleExternals,org.openh
  ab.binding.voicecontrolledruleeditor.internal.commandHandlers.ruleInt
- ernals,org.openhab.binding.voicecontrolledruleeditor.internal.constan
- ts,org.openhab.binding.voicecontrolledruleeditor.internal.factory
+ ernals,org.openhab.binding.voicecontrolledruleeditor.internal.command
+ Handlers.states,org.openhab.binding.voicecontrolledruleeditor.interna
+ l.commandHandlers.states.ruleAdd,org.openhab.binding.voicecontrolledr
+ uleeditor.internal.commandHandlers.states.ruleEdit,org.openhab.bindin
+ g.voicecontrolledruleeditor.internal.commandHandlers.states.ruleRenam
+ e,org.openhab.binding.voicecontrolledruleeditor.internal.constants,or
+ g.openhab.binding.voicecontrolledruleeditor.internal.factory,org.open
+ hab.binding.voicecontrolledruleeditor.internal.utils
 Provide-Capability: osgi.service;objectClass:List<String>="org.openhab
  .core.thing.binding.ThingHandlerFactory";uses:="org.openhab.core.thin
  g.binding"
 Require-Capability: osgi.service;filter:="(objectClass=org.openhab.cor
- e.automation.RuleRegistry)";effective:=active,osgi.service;filter:="(
- objectClass=org.openhab.core.voice.VoiceManager)";effective:=active,o
- sgi.extender;filter:="(&(osgi.extender=osgi.component)(version>=1.4.0
- )(!(version>=2.0.0)))",osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11
- ))"
+ e.audio.AudioManager)";effective:=active,osgi.service;filter:="(objec
+ tClass=org.openhab.core.automation.RuleRegistry)";effective:=active,o
+ sgi.service;filter:="(objectClass=org.openhab.core.items.ItemRegistry
+ )";effective:=active,osgi.service;filter:="(objectClass=org.openhab.c
+ ore.thing.ThingRegistry)";effective:=active,osgi.service;filter:="(ob
+ jectClass=org.openhab.core.voice.VoiceManager)";effective:=active,osg
+ i.extender;filter:="(&(osgi.extender=osgi.component)(version>=1.4.0)(
+ !(version>=2.0.0)))",osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))
+ "
 Service-Component: OSGI-INF/org.openhab.binding.voicecontrolledruleedi
  tor.internal.factory.VoiceControlledRuleEditorHandlerFactory.xml
 Tool: Bnd-6.1.0.202111221555

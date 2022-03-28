@@ -18,9 +18,16 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.UsersCommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.AudioManagerUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ItemUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ThingUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
+import org.openhab.core.audio.AudioManager;
 import org.openhab.core.automation.RuleRegistry;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingRegistry;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
@@ -36,13 +43,17 @@ import org.openhab.core.voice.VoiceManager;
 @NonNullByDefault
 public class VoiceControlledRuleEditorHandler extends BaseThingHandler {
     private @Nullable VoiceControlledRuleEditorConfiguration config;
-    private VoiceManager voiceManager;
     private RuleRegistry ruleRegistry;
 
-    public VoiceControlledRuleEditorHandler(Thing thing, VoiceManager voiceManager, RuleRegistry ruleRegistry) {
+    public VoiceControlledRuleEditorHandler(Thing thing, VoiceManager voiceManager, RuleRegistry ruleRegistry,
+            ItemRegistry itemRegistry, ThingRegistry thingRegistry, AudioManager audioManager) {
         super(thing);
-        this.voiceManager = voiceManager;
+
         this.ruleRegistry = ruleRegistry;
+        VoiceManagerUtils.Prepare(voiceManager);
+        AudioManagerUtils.Prepare(audioManager);
+        ThingUtils.Prepare(thingRegistry);
+        ItemUtils.Prepare(itemRegistry);
     }
 
     private class IdentifiedCommand {
@@ -67,19 +78,19 @@ public class VoiceControlledRuleEditorHandler extends BaseThingHandler {
             }
 
             if (command.toString().contains("fail") || command.toString().contains("safe")) {
-                voiceManager.say("Fail safe activated");
+                VoiceManagerUtils.say("Fail safe activated");
                 UsersCommandHandler.activateFailSafe();
                 return;
             }
 
             var identifiedCommand = new IdentifiedCommand(command);
             if (identifiedCommand.deviceIdentifier.isEmpty()) {
-                voiceManager.say(TTSConstants.ERROR_NO_IDENTIFIER);
+                VoiceManagerUtils.say(TTSConstants.ERROR_NO_IDENTIFIER);
                 return;
             }
 
             UsersCommandHandler.handleUserCommand(identifiedCommand.commandString, identifiedCommand.deviceIdentifier,
-                    voiceManager, ruleRegistry);
+                    ruleRegistry);
 
             // TODO: handle command
 

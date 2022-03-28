@@ -1,0 +1,6 @@
+1. Add conditions
+2. Status reports
+3. Back, cancel
+4. Add reader
+5. Add TAC editing
+6. Add TAC removal

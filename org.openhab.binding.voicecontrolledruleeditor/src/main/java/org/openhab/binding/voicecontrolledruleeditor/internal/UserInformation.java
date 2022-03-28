@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.DefaultController;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
-import org.openhab.core.voice.VoiceManager;
 
 public class UserInformation {
     public final long handlerExpirationTime = 1000 * 60 * 5;
@@ -12,18 +11,16 @@ public class UserInformation {
 
     private String deviceIdentifier;
     private Date lastHandlerInteraction;
-    private VoiceManager voiceManager;
 
-    public UserInformation(String deviceIdentifier, VoiceManager voiceManager) {
+    public UserInformation(String deviceIdentifier) {
         this.deviceIdentifier = deviceIdentifier;
         this.lastHandlerInteraction = new Date();
-        this.commandHandler = new DefaultController(voiceManager);
-        this.voiceManager = voiceManager;
+        this.commandHandler = new DefaultController();
     }
 
     public ICommandHandler getCommandHandler() {
         if (new Date().getTime() > (lastHandlerInteraction.getTime() + handlerExpirationTime)) {
-            commandHandler = new DefaultController(voiceManager);
+            commandHandler = new DefaultController();
         }
 
         lastHandlerInteraction = new Date();
