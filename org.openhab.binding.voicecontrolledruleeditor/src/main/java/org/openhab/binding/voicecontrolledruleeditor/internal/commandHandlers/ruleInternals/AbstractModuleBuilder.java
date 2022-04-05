@@ -2,10 +2,12 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.r
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.ConfigurationType;
+import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.ModuleTypeValue;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ConfigurationResult;
 import org.openhab.core.automation.Module;
 
@@ -20,6 +22,18 @@ public abstract class AbstractModuleBuilder {
     }
 
     public abstract AbstractModuleBuilder createWithTypeFromCommand(String commandString);
+
+    public AbstractModuleBuilder createFromModule(Module module) {
+        this.type = module.getTypeUID();
+        this.configurationProperties = module.getConfiguration().getProperties();
+
+        ModuleTypeValue moduleTypeValue = ModuleTypeValue.getFromValue(type);
+        this.availableConfigurations = getAvailableConfigurationTypes(moduleTypeValue);
+
+        return this;
+    }
+
+    protected abstract AvailableConfigurationType[] getAvailableConfigurationTypes(ModuleTypeValue moduleType);
 
     public abstract Enums.ModuleType getModuleType();
 
@@ -37,8 +51,42 @@ public abstract class AbstractModuleBuilder {
         return Arrays.stream(availableConfigurations).anyMatch(x -> x.type.type.contains(configurationType));
     }
 
+    @SuppressWarnings("unchecked")
     public final AbstractModuleBuilder withConfiguration(ConfigurationResult configuration) {
-        configurationProperties.put(configuration.getType(), configuration.getValue());
+        Object currentValue = configurationProperties.get(configuration.getType());
+
+        switch (configuration.getConfigurationAction()) {
+            case ADD:
+                // 315salzaz TEST THIS A.S.A.P.
+                if (currentValue == null) {
+                    configurationProperties.put(configuration.getType(), List.of(configuration.getValue()));
+                    break;
+                }
+
+                List<String> withAdded = (List<String>) currentValue;
+                if (withAdded.contains(configuration.getValue()))
+                    break;
+
+                withAdded.add((String) configuration.getValue());
+
+                configurationProperties.put(configuration.getType(), withAdded);
+                break;
+            case REMOVE:
+                if (currentValue == null)
+                    break;
+
+                List<String> withRemoved = (List<String>) currentValue;
+                withRemoved.remove(configuration.getValue());
+
+                configurationProperties.put(configuration.getType(), withRemoved);
+                break;
+            case SET:
+                configurationProperties.put(configuration.getType(), configuration.getValue());
+                break;
+            default:
+                break;
+
+        }
         return this;
     }
 

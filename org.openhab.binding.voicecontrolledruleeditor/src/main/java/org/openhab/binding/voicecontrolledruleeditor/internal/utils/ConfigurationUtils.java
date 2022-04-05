@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.ConfigurationType;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ConfigurationResult.ConfigurationAction;
 import org.openhab.core.thing.ThingStatus;
 
 public class ConfigurationUtils {
@@ -133,32 +134,21 @@ public class ConfigurationUtils {
             return null;
         }
 
-        // 315salzaz Transfer to StringUtils
-        String longestMatchString = "";
-        int longestMatchLength = 0;
-        for (int i = 0; i < filteredNames.length; i++) {
-            int startIndex = filteredNames[i].indexOf(value);
-            int matchLengthOfCurrent = 0;
+        return StringUtils.longestMatching(filteredNames, value, true);
+    }
 
-            for (int j = startIndex; j < filteredNames[i].length(); j++) {
-                if (value.charAt(j - startIndex) == filteredNames[i].charAt(j)) {
-                    matchLengthOfCurrent++;
-                } else {
-                    break;
-                }
-            }
-
-            if (matchLengthOfCurrent > longestMatchLength) {
-                longestMatchString = filteredNames[i];
-                longestMatchLength = matchLengthOfCurrent;
-            }
-        }
-
-        return longestMatchString;
+    private static String tryGetRuleIdFromNameOrDescription(String value) {
+        // 315salzaz read out name after getting it
+        return RuleRegistryUtils.getRuleFromNameOrDescription(value).getUID();
     }
 
     private static ConfigurationResult getConfigurationResult(ConfigurationType configurationType, String commandString,
             String userInputConst) {
+        return getConfigurationResult(configurationType, commandString, userInputConst, ConfigurationAction.SET);
+    }
+
+    private static ConfigurationResult getConfigurationResult(ConfigurationType configurationType, String commandString,
+            String userInputConst, ConfigurationResult.ConfigurationAction configurationAction) {
         int splitIndex = commandString.indexOf(userInputConst) + userInputConst.length();
         // 315salzaz what is valueString if nothing is inputed as value?
         String valueString = commandString.substring(splitIndex);
@@ -193,22 +183,26 @@ public class ConfigurationUtils {
             case CONSIDER_CONDITIONS:
             case ENABLE:
                 value = Boolean.parseBoolean(valueString);
+                break;
             case OPERATOR:
                 value = tryParseOperator(valueString);
+                break;
             case DAY_OF_WEEK:
                 value = tryParseDayOfWeek(valueString);
+                break;
             case USER_ID:
                 value = tryParseEmail(valueString);
+                break;
             case SOUND:
                 value = tryParseAudioFileName(valueString);
-                // 315salzaz group name postponed. Don't know how to get stuff from model or sth...
-                // 315salzaz event postponed. Cant get chanels to work
+                break;
+            case RULE_IDS:
+                value = tryGetRuleIdFromNameOrDescription(valueString);
+                break;
+            // 315salzaz group name postponed. Don't know how to get stuff from model or sth...
+            // 315salzaz event postponed. Cant get chanels to work
             case GROUP_NAME:
             case EVENT:
-
-                // 315salzaz newly added
-            case RULE_IDS:
-                // get rule from name or label???
             case SINK:
                 // 315salzaz let's hope i don't need it yet (will fill in default)
 
@@ -217,24 +211,43 @@ public class ConfigurationUtils {
                 break;
         }
 
-        return new ConfigurationResult(configurationType.type, value);
+        return new ConfigurationResult(configurationType.type, value, configurationAction);
     }
 
     public static ConfigurationResult extractConfigurationFromCommand(String commandString) {
+        // Time
         if (UserInputs.contains(UserInputs.CONFIGURE_TIME, commandString))
             return getConfigurationResult(ConfigurationType.TIME, commandString, UserInputs.CONFIGURE_TIME);
-        if (UserInputs.contains(UserInputs.CONFIGURE_THING_ID, commandString))
-            return getConfigurationResult(ConfigurationType.THING_ID, commandString, UserInputs.CONFIGURE_THING_ID);
+        if (UserInputs.contains(UserInputs.CONFIGURE_START_TIME, commandString))
+            return getConfigurationResult(ConfigurationType.START_TIME, commandString, UserInputs.CONFIGURE_START_TIME);
+        if (UserInputs.contains(UserInputs.CONFIGURE_END_TIME, commandString))
+            return getConfigurationResult(ConfigurationType.END_TIME, commandString, UserInputs.CONFIGURE_END_TIME);
+        if (UserInputs.contains(UserInputs.CONFIGURE_ADD_DAY_OF_WEEK_ARR, commandString)) {
+            String specificInput = UserInputs.getSpecificFromArray(UserInputs.CONFIGURE_ADD_RULE_ID_ARR, commandString);
+            return getConfigurationResult(ConfigurationType.DAY_OF_WEEK, commandString, specificInput,
+                    ConfigurationAction.ADD);
+        }
+        if (UserInputs.contains(UserInputs.CONFIGURE_REMOVE_DAY_OF_WEEK_ARR, commandString)) {
+            String specificInput = UserInputs.getSpecificFromArray(UserInputs.CONFIGURE_REMOVE_RULE_ID_ARR,
+                    commandString);
+            return getConfigurationResult(ConfigurationType.DAY_OF_WEEK, commandString, specificInput,
+                    ConfigurationAction.REMOVE);
+        }
+        if (UserInputs.contains(UserInputs.CONFIGURE_OFFSET, commandString))
+            return getConfigurationResult(ConfigurationType.OFFSET, commandString, UserInputs.CONFIGURE_OFFSET);
+        // System
         if (UserInputs.contains(UserInputs.CONFIGURE_START_LEVEL, commandString))
             return getConfigurationResult(ConfigurationType.START_LEVEL, commandString,
                     UserInputs.CONFIGURE_START_LEVEL);
+        // Thing
+        if (UserInputs.contains(UserInputs.CONFIGURE_THING_ID, commandString))
+            return getConfigurationResult(ConfigurationType.THING_ID, commandString, UserInputs.CONFIGURE_THING_ID);
         if (UserInputs.contains(UserInputs.CONFIGURE_STATUS, commandString))
             return getConfigurationResult(ConfigurationType.STATUS, commandString, UserInputs.CONFIGURE_STATUS);
         if (UserInputs.contains(UserInputs.CONFIGURE_PREVIOUS_STATUS, commandString))
             return getConfigurationResult(ConfigurationType.PREVIOUS_STATUS, commandString,
                     UserInputs.CONFIGURE_PREVIOUS_STATUS);
-        if (UserInputs.contains(UserInputs.CONFIGURE_EVENT, commandString))
-            return getConfigurationResult(ConfigurationType.EVENT, commandString, UserInputs.CONFIGURE_EVENT);
+        // Item
         if (UserInputs.contains(UserInputs.CONFIGURE_ITEM_NAME, commandString))
             return getConfigurationResult(ConfigurationType.ITEM_NAME, commandString, UserInputs.CONFIGURE_ITEM_NAME);
         if (UserInputs.contains(UserInputs.CONFIGURE_STATE, commandString))
@@ -242,17 +255,9 @@ public class ConfigurationUtils {
         if (UserInputs.contains(UserInputs.CONFIGURE_PREVIOUS_STATE, commandString))
             return getConfigurationResult(ConfigurationType.PREVIOUS_STATE, commandString,
                     UserInputs.CONFIGURE_PREVIOUS_STATE);
-        if (UserInputs.contains(UserInputs.CONFIGURE_GROUP_NAME, commandString))
-            return getConfigurationResult(ConfigurationType.GROUP_NAME, commandString, UserInputs.CONFIGURE_GROUP_NAME);
-        if (UserInputs.contains(UserInputs.CONFIGURE_COMMAND, commandString))
-            return getConfigurationResult(ConfigurationType.COMMAND, commandString, UserInputs.CONFIGURE_COMMAND);
-        if (UserInputs.contains(UserInputs.CONFIGURE_ENABLE, commandString))
-            return getConfigurationResult(ConfigurationType.ENABLE, commandString, UserInputs.CONFIGURE_ENABLE);
-        if (UserInputs.contains(UserInputs.CONFIGURE_ADD_RULE_ID, commandString))
-            return getConfigurationResult(ConfigurationType.RULE_IDS, commandString, UserInputs.CONFIGURE_ADD_RULE_ID);
-        if (UserInputs.contains(UserInputs.CONFIGURE_CONSIDER_CONDITIONS, commandString))
-            return getConfigurationResult(ConfigurationType.CONSIDER_CONDITIONS, commandString,
-                    UserInputs.CONFIGURE_CONSIDER_CONDITIONS);
+        if (UserInputs.contains(UserInputs.CONFIGURE_OPERATOR, commandString))
+            return getConfigurationResult(ConfigurationType.OPERATOR, commandString, UserInputs.CONFIGURE_OPERATOR);
+        // Output
         if (UserInputs.contains(UserInputs.CONFIGURE_AUDIO_OUTPUT, commandString))
             return getConfigurationResult(ConfigurationType.SINK, commandString, UserInputs.CONFIGURE_AUDIO_OUTPUT);
         if (UserInputs.contains(UserInputs.CONFIGURE_SOUND, commandString))
@@ -263,17 +268,24 @@ public class ConfigurationUtils {
             return getConfigurationResult(ConfigurationType.MESSAGE, commandString, UserInputs.CONFIGURE_MESSAGE);
         if (UserInputs.contains(UserInputs.CONFIGURE_USER_EMAIL, commandString))
             return getConfigurationResult(ConfigurationType.USER_ID, commandString, UserInputs.CONFIGURE_USER_EMAIL);
-        if (UserInputs.contains(UserInputs.CONFIGURE_ADD_DAY_OF_WEEK, commandString))
-            return getConfigurationResult(ConfigurationType.DAY_OF_WEEK, commandString,
-                    UserInputs.CONFIGURE_ADD_DAY_OF_WEEK);
-        if (UserInputs.contains(UserInputs.CONFIGURE_START_TIME, commandString))
-            return getConfigurationResult(ConfigurationType.START_TIME, commandString, UserInputs.CONFIGURE_START_TIME);
-        if (UserInputs.contains(UserInputs.CONFIGURE_END_TIME, commandString))
-            return getConfigurationResult(ConfigurationType.END_TIME, commandString, UserInputs.CONFIGURE_END_TIME);
-        if (UserInputs.contains(UserInputs.CONFIGURE_OPERATOR, commandString))
-            return getConfigurationResult(ConfigurationType.OPERATOR, commandString, UserInputs.CONFIGURE_OPERATOR);
-        if (UserInputs.contains(UserInputs.CONFIGURE_OFFSET, commandString))
-            return getConfigurationResult(ConfigurationType.OFFSET, commandString, UserInputs.CONFIGURE_OFFSET);
+        // Rule
+        if (UserInputs.contains(UserInputs.CONFIGURE_ENABLE, commandString))
+            return getConfigurationResult(ConfigurationType.ENABLE, commandString, UserInputs.CONFIGURE_ENABLE);
+        if (UserInputs.contains(UserInputs.CONFIGURE_ADD_RULE_ID_ARR, commandString)) {
+            String specificInput = UserInputs.getSpecificFromArray(UserInputs.CONFIGURE_ADD_RULE_ID_ARR, commandString);
+            return getConfigurationResult(ConfigurationType.RULE_IDS, commandString, specificInput,
+                    ConfigurationAction.ADD);
+        }
+        if (UserInputs.contains(UserInputs.CONFIGURE_CONSIDER_CONDITIONS, commandString))
+            return getConfigurationResult(ConfigurationType.CONSIDER_CONDITIONS, commandString,
+                    UserInputs.CONFIGURE_CONSIDER_CONDITIONS);
+        // Other
+        if (UserInputs.contains(UserInputs.CONFIGURE_EVENT, commandString))
+            return getConfigurationResult(ConfigurationType.EVENT, commandString, UserInputs.CONFIGURE_EVENT);
+        if (UserInputs.contains(UserInputs.CONFIGURE_GROUP_NAME, commandString))
+            return getConfigurationResult(ConfigurationType.GROUP_NAME, commandString, UserInputs.CONFIGURE_GROUP_NAME);
+        if (UserInputs.contains(UserInputs.CONFIGURE_COMMAND, commandString))
+            return getConfigurationResult(ConfigurationType.COMMAND, commandString, UserInputs.CONFIGURE_COMMAND);
 
         return null;
     }

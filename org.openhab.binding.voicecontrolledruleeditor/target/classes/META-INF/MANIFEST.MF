@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Automatic-Module-Name: org.openhab.binding.voicecontrolledruleeditor
-Bnd-LastModified: 1648499390815
+Bnd-LastModified: 1649112770830
 Bundle-Description: This project contains the official add-ons of open
  HAB
 Bundle-Developers: openhab;email="info@openhab.org";name=openHAB;organ
@@ -22,7 +22,7 @@ Bundle-SCM: url="https://github.com/openhab/openhab-addons/org.openhab
  ding.voicecontrolledruleeditor",tag=HEAD
 Bundle-SymbolicName: org.openhab.binding.voicecontrolledruleeditor
 Bundle-Vendor: openHAB.org
-Bundle-Version: 3.3.0.202203282029
+Bundle-Version: 3.3.0.202204042252
 Created-By: 11.0.14 (Azul Systems, Inc.)
 Import-Package: org.openhab.core,org.openhab.core.audio,org.openhab.co
  re.automation,org.openhab.core.automation.util,org.openhab.core.commo

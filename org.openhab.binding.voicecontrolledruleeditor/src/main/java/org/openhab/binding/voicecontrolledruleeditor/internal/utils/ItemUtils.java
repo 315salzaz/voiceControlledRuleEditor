@@ -11,7 +11,7 @@ public class ItemUtils {
             ItemUtils.itemRegistry = itemRegistry;
     }
 
-    public static Item getItemFromLabel(String label) {
+    private static Item getItemFromLabel(String label) {
         var itemsList = itemRegistry.getAll();
         Item item = itemsList.stream()
                 .filter(i -> StringUtils.withoutSpaces(i.getLabel()).equalsIgnoreCase(StringUtils.withoutSpaces(label)))
@@ -20,7 +20,7 @@ public class ItemUtils {
         return item;
     }
 
-    public static Item getItemFromName(String name) {
+    private static Item getItemFromName(String name) {
         var itemsList = itemRegistry.getAll();
         Item item = itemsList.stream()
                 .filter(i -> StringUtils.withoutSpaces(i.getName()).equalsIgnoreCase(StringUtils.withoutSpaces(name)))

@@ -6,9 +6,9 @@ import java.util.stream.Stream;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState;
-import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditBuildingActionType;
-import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditBuildingConditionType;
-import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditBuildingTriggerType;
+import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditCreateModuleState;
+import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditEditModuleState;
+import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditRemoveModuleState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditWaitingForModuleTypeState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditWaitingForNameState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
@@ -16,6 +16,8 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConst
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ConfigurationResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ConfigurationUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleRegistryUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.StringUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Condition;
@@ -97,7 +99,9 @@ public class RuleEditingController implements ICommandHandler {
     }
 
     public HandleCommandResult handleNameInputed(String commandString) {
-        var rulesWithName = ruleRegistry.getAll().stream().filter(x -> x.getName().equals(commandString));
+        var bestNameMatch = StringUtils.longestMatching(
+                ruleRegistry.getAll().stream().map(r -> r.getName()).toArray(String[]::new), commandString);
+        var rulesWithName = ruleRegistry.getAll().stream().filter(x -> x.getName().equals(bestNameMatch));
         Rule rule = rulesWithName.findFirst().orElse(null);
 
         if (rule == null) {
@@ -114,23 +118,27 @@ public class RuleEditingController implements ICommandHandler {
     }
 
     public HandleCommandResult handleTypeInputed(String commandString) {
-        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)
-                && UserInputs.contains(UserInputs.TRIGGER, commandString)) {
-            handlerState = new RuleEditBuildingTriggerType(this);
+        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)) {
+            handlerState = new RuleEditCreateModuleState(this);
+        } else if (UserInputs.contains(UserInputs.EDIT, commandString)) {
+            handlerState = new RuleEditEditModuleState(this);
+        } else if (UserInputs.contains(UserInputs.REMOVE_ARR, commandString)) {
+            handlerState = new RuleEditRemoveModuleState(this);
+        } else {
+            return null;
+        }
+
+        if (UserInputs.contains(UserInputs.TRIGGER, commandString)) {
             moduleBuilderHandler = new RuleTriggerBuilderHandler();
             VoiceManagerUtils.say(TTSConstants.SELECT_TRIGGER_TYPE);
             return null;
         }
-        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)
-                && UserInputs.contains(UserInputs.ACTION, commandString)) {
-            handlerState = new RuleEditBuildingActionType(this);
+        if (UserInputs.contains(UserInputs.ACTION, commandString)) {
             moduleBuilderHandler = new RuleActionBuilder();
             VoiceManagerUtils.say(TTSConstants.SELECT_ACTION_TYPE);
             return null;
         }
-        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)
-                && UserInputs.contains(UserInputs.CONDITION, commandString)) {
-            handlerState = new RuleEditBuildingConditionType(this);
+        if (UserInputs.contains(UserInputs.CONDITION, commandString)) {
             moduleBuilderHandler = new RuleConditionBuilder();
             VoiceManagerUtils.say(TTSConstants.SELECT_CONDITION_TYPE);
             return null;
@@ -139,7 +147,51 @@ public class RuleEditingController implements ICommandHandler {
         return null;
     }
 
-    public HandleCommandResult handleBuilderCommand(String commandString) {
+    private boolean tryComplete(String commandString) {
+        if (!UserInputs.isEquals(UserInputs.COMPLETE, commandString))
+            return false;
+
+        createModule();
+        VoiceManagerUtils.say(TTSConstants.MODULE_CREATED);
+        handlerState = new RuleEditWaitingForModuleTypeState(this);
+        return true;
+    }
+
+    public HandleCommandResult handleEditBuilderCommand(String commandString) {
+        if (!moduleBuilderHandler.isCreated()) {
+            Module module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, ruleRegistry.get(ruleId),
+                    moduleBuilderHandler.getModuleType());
+            if (module == null) {
+                return null;
+            }
+
+            moduleBuilderHandler.createFromModule(module);
+        }
+
+        if (tryComplete(commandString))
+            return null;
+
+        ConfigurationResult configuration = ConfigurationUtils.extractConfigurationFromCommand(commandString);
+        if (configuration == null || configuration.getValue() == null) {
+            VoiceManagerUtils.say(String.format(TTSConstants.CONFIGURATION_NOT_FOUND, commandString));
+            return null;
+        }
+
+        if (moduleBuilderHandler.canAddConfiguration(configuration.getType()))
+            moduleBuilderHandler.withConfiguration(configuration);
+
+        return null;
+    }
+
+    public HandleCommandResult handleRemoveBuilderCommand(String commandString) {
+        // Select module
+        // Confirm
+
+        return null;
+    }
+
+    // 315salzaz rename: handleCreateBuilderCommand
+    public HandleCommandResult handleCreateBuilderCommand(String commandString) {
         // I'd like this to be like rule naming (with confirmation)
         if (!moduleBuilderHandler.isCreated()) {
             moduleBuilderHandler.createWithTypeFromCommand(commandString);
@@ -154,12 +206,8 @@ public class RuleEditingController implements ICommandHandler {
             return null;
         }
 
-        if (UserInputs.isEquals(UserInputs.COMPLETE, commandString)) {
-            createModule();
-            VoiceManagerUtils.say(TTSConstants.MODULE_CREATED);
-            handlerState = new RuleEditWaitingForModuleTypeState(this);
+        if (tryComplete(commandString))
             return null;
-        }
 
         ConfigurationResult configuration = ConfigurationUtils.extractConfigurationFromCommand(commandString);
 
@@ -168,8 +216,7 @@ public class RuleEditingController implements ICommandHandler {
             return null;
         }
 
-        if (UserInputs.contains(UserInputs.CONFIGURE_ARR, commandString)
-                && moduleBuilderHandler.canAddConfiguration(configuration.getType()))
+        if (moduleBuilderHandler.canAddConfiguration(configuration.getType()))
             moduleBuilderHandler.withConfiguration(configuration);
 
         return null;

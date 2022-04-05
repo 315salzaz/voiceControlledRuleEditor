@@ -1,6 +1,7 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.constants;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class UserInputs {
     public static String[] CREATE_NEW_RULE_ARR = { "create", "new" };
@@ -12,8 +13,9 @@ public class UserInputs {
     public static String BACK = "back";
 
     public static String[] CREATE_ARR = { "create", "add", "build" };
-    public static String RENAME = "rename";
+    public static String EDIT = "edit";
     public static String[] REMOVE_ARR = { "delete", "remove" };
+    public static String RENAME = "rename";
     public static String TRIGGER = "trigger";
     public static String ACTION = "action";
     public static String CONDITION = "condition";
@@ -89,8 +91,12 @@ public class UserInputs {
     public static String CONFIGURE_COMMAND = "set configuration of command to ";
     public static String CONFIGURE_ENABLE = "configure enable to ";
     // 315salzaz generalized ids is a good idea?
-    public static String CONFIGURE_ADD_RULE_ID = "add id from name ";
-    public static String CONFIGURE_ADD_DAY_OF_WEEK = "add weekday ";
+    public static String[] CONFIGURE_ADD_RULE_ID_ARR = { "add a rule with name ", "add a rule with description ",
+            "add a rule called " };
+    public static String[] CONFIGURE_REMOVE_RULE_ID_ARR = { "remove a rule called", "remove a rule with name ",
+            "remove a rule with description " };
+    public static String[] CONFIGURE_ADD_DAY_OF_WEEK_ARR = { "add weekday ", "add a weekday " };
+    public static String[] CONFIGURE_REMOVE_DAY_OF_WEEK_ARR = { "remove weekday ", "remove a weekday " };
     public static String CONFIGURE_CONSIDER_CONDITIONS = "set consider conditions to ";
     public static String CONFIGURE_AUDIO_OUTPUT = "set audio output to number ";
     public static String CONFIGURE_SOUND = "set sound to number ";
@@ -113,5 +119,9 @@ public class UserInputs {
 
     public static boolean contains(String userInput, String commandString) {
         return commandString.contains(userInput);
+    }
+
+    public static String getSpecificFromArray(String[] array, String userInput) {
+        return Stream.of(array).filter(a -> userInput.contains(a)).findFirst().orElse(null);
     }
 }
