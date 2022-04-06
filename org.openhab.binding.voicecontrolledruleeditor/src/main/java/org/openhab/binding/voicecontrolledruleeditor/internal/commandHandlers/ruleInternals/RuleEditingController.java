@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState;
+import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState.ConfirmationState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditCreateModuleState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditEditModuleState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditRemoveModuleState;
@@ -184,8 +185,27 @@ public class RuleEditingController implements ICommandHandler {
     }
 
     public HandleCommandResult handleRemoveBuilderCommand(String commandString) {
-        // Select module
-        // Confirm
+        if (!moduleBuilderHandler.isCreated()) {
+            var rule = ruleRegistry.get(ruleId);
+            var module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, rule,
+                    moduleBuilderHandler.getModuleType());
+
+            moduleBuilderHandler.createFromModule(module);
+            handlerState.updateConfirmationState(ConfirmationState.CONFIRMING);
+
+            VoiceManagerUtils.say(String.format(TTSConstants.MODULE_DELETE_CONFIRMATION, module.getLabel()));
+            return null;
+        }
+
+        if (handlerState.getConfirmationState() == ConfirmationState.CONFIRMING) {
+            if (UserInputs.isEquals(UserInputs.CONFIRM_ARRAY, commandString)) {
+                
+            }
+
+            if (UserInputs.isEquals(UserInputs.DENY_ARRAY, commandString)) {
+
+            }
+        }
 
         return null;
     }

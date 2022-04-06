@@ -105,23 +105,23 @@ public class UserInputs {
     public static String CONFIGURE_MESSAGE = "set message to";
     public static String CONFIGURE_USER_EMAIL = "set user email to ";
 
-    public static boolean isEquals(String[] userInput, String commandString) {
-        return Arrays.stream(userInput).anyMatch(x -> commandString.equals(x));
+    public static boolean isEquals(String[] userInputConst, String commandString) {
+        return Arrays.stream(userInputConst).anyMatch(x -> commandString.equals(x));
     }
 
-    public static boolean isEquals(String userInput, String commandString) {
-        return userInput.equals(commandString);
+    public static boolean isEquals(String userInputConst, String commandString) {
+        return userInputConst.equals(commandString);
     }
 
-    public static boolean contains(String[] userInput, String commandString) {
-        return Arrays.stream(userInput).anyMatch(x -> commandString.contains(x));
+    public static boolean contains(String[] userInputConst, String commandString) {
+        return Arrays.stream(userInputConst).anyMatch(x -> commandString.contains(x));
     }
 
-    public static boolean contains(String userInput, String commandString) {
-        return commandString.contains(userInput);
+    public static boolean contains(String userInputConst, String commandString) {
+        return commandString.contains(userInputConst);
     }
 
-    public static String getSpecificFromArray(String[] array, String userInput) {
-        return Stream.of(array).filter(a -> userInput.contains(a)).findFirst().orElse(null);
+    public static String getSpecificFromArray(String[] array, String command) {
+        return Stream.of(array).filter(a -> command.contains(a)).findFirst().orElse(null);
     }
 }
