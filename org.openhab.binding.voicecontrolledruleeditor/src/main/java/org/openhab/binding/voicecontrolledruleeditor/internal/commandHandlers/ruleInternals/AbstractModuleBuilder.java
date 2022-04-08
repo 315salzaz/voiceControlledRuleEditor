@@ -1,5 +1,6 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ruleInternals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.openhab.core.automation.Module;
 public abstract class AbstractModuleBuilder {
     protected String type = "";
     protected String label = "";
+    private String id = null;
     protected AvailableConfigurationType[] availableConfigurations;
     private Map<String, Object> configurationProperties;
 
@@ -59,8 +61,7 @@ public abstract class AbstractModuleBuilder {
             case ADD:
                 // 315salzaz TEST THIS A.S.A.P.
                 if (currentValue == null) {
-                    configurationProperties.put(configuration.getType(), List.of(configuration.getValue()));
-                    break;
+                    currentValue = new ArrayList<String>();
                 }
 
                 List<String> withAdded = (List<String>) currentValue;
@@ -69,7 +70,8 @@ public abstract class AbstractModuleBuilder {
 
                 withAdded.add((String) configuration.getValue());
 
-                configurationProperties.put(configuration.getType(), withAdded);
+                // 315salzaz CRITICAL error
+                configurationProperties.put(configuration.getType(), (Object) withAdded);
                 break;
             case REMOVE:
                 if (currentValue == null)
@@ -93,6 +95,15 @@ public abstract class AbstractModuleBuilder {
     public final AbstractModuleBuilder withLabel(String label) {
         this.label = label;
         return this;
+    }
+
+    public final AbstractModuleBuilder withId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public final String getId() {
+        return id;
     }
 
     public final boolean isCreated() {

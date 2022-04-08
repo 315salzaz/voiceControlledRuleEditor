@@ -1,5 +1,8 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.ModuleType;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Condition;
@@ -7,6 +10,7 @@ import org.openhab.core.automation.Module;
 import org.openhab.core.automation.Rule;
 import org.openhab.core.automation.RuleRegistry;
 import org.openhab.core.automation.Trigger;
+import org.openhab.core.automation.util.RuleBuilder;
 
 public class RuleRegistryUtils {
     private static RuleRegistry ruleRegistry;
@@ -57,8 +61,9 @@ public class RuleRegistryUtils {
     }
 
     private static Condition getConditionFromLabelOrDescription(String expression, Rule rule) {
-        String[] allLabels = rule.getActions().stream().map(a -> a.getLabel()).toArray(String[]::new);
-        String[] allDescriptions = rule.getActions().stream().map(a -> a.getDescription()).toArray(String[]::new);
+        String[] allLabels = rule.getConditions().stream().map(a -> a.getLabel()).toArray(String[]::new);
+        String[] allDescriptions = rule.getConditions().stream().filter(a -> a.getDescription() != null)
+                .map(a -> a.getDescription()).toArray(String[]::new);
 
         var matchingLabel = StringUtils.longestMatching(allLabels, expression, true);
         if (matchingLabel != null)
@@ -66,13 +71,17 @@ public class RuleRegistryUtils {
                     .orElse(null);
 
         var matchingDescription = StringUtils.longestMatching(allDescriptions, expression, true);
+        if (matchingDescription == null) {
+            return null;
+        }
+
         return rule.getConditions().stream().filter(a -> a.getDescription().equals(matchingDescription)).findFirst()
                 .orElse(null);
     }
 
     private static Trigger getTriggerFromLabelOrDescription(String expression, Rule rule) {
-        String[] allLabels = rule.getActions().stream().map(a -> a.getLabel()).toArray(String[]::new);
-        String[] allDescriptions = rule.getActions().stream().map(a -> a.getDescription()).toArray(String[]::new);
+        String[] allLabels = rule.getTriggers().stream().map(a -> a.getLabel()).toArray(String[]::new);
+        String[] allDescriptions = rule.getTriggers().stream().map(a -> a.getDescription()).toArray(String[]::new);
 
         var matchingLabel = StringUtils.longestMatching(allLabels, expression, true);
         if (matchingLabel != null)
@@ -98,5 +107,65 @@ public class RuleRegistryUtils {
             default:
                 return null;
         }
+    }
+
+    public static Rule ruleWithAddedModule(Rule rule, Module module, ModuleType moduleType) {
+        switch (moduleType) {
+            case ACTION:
+                List<Action> actions = new ArrayList<Action>(rule.getActions());
+                actions.add((Action) module);
+                return RuleBuilder.create(rule).withActions(actions).build();
+            case CONDITION:
+                List<Condition> conditions = new ArrayList<Condition>(rule.getConditions());
+                conditions.add((Condition) module);
+                return RuleBuilder.create(rule).withConditions(conditions).build();
+            case TRIGGER:
+                List<Trigger> triggers = new ArrayList<Trigger>(rule.getTriggers());
+                triggers.add((Trigger) module);
+                return RuleBuilder.create(rule).withTriggers(triggers).build();
+        }
+
+        return null;
+    }
+
+    public static Rule ruleWithEditedModule(Rule rule, Module module, ModuleType moduleType) {
+        switch (moduleType) {
+            case ACTION:
+                List<Action> actions = rule.getActions();
+                actions.removeIf(a -> a.getId().equals(module.getId()));
+                actions.add((Action) module);
+                return RuleBuilder.create(rule).withActions(actions).build();
+            case CONDITION:
+                List<Condition> conditions = rule.getConditions();
+                conditions.removeIf(c -> c.getId().equals(module.getId()));
+                conditions.add((Condition) module);
+                return RuleBuilder.create(rule).withConditions(conditions).build();
+            case TRIGGER:
+                List<Trigger> triggers = rule.getTriggers();
+                triggers.removeIf(t -> t.getId().equals(module.getId()));
+                triggers.add((Trigger) module);
+                return RuleBuilder.create(rule).withTriggers(triggers).build();
+        }
+
+        return null;
+    }
+
+    public static Rule ruleWithRemovedModule(Rule rule, Module module, ModuleType moduleType) {
+        switch (moduleType) {
+            case ACTION:
+                List<Action> actions = rule.getActions();
+                actions.removeIf(a -> a.getId().equals(module.getId()));
+                return RuleBuilder.create(rule).withActions(actions).build();
+            case CONDITION:
+                List<Condition> conditions = rule.getConditions();
+                conditions.removeIf(c -> c.getId().equals(module.getId()));
+                return RuleBuilder.create(rule).withConditions(conditions).build();
+            case TRIGGER:
+                List<Trigger> triggers = rule.getTriggers();
+                triggers.removeIf(t -> t.getId().equals(module.getId()));
+                return RuleBuilder.create(rule).withTriggers(triggers).build();
+        }
+
+        return null;
     }
 }

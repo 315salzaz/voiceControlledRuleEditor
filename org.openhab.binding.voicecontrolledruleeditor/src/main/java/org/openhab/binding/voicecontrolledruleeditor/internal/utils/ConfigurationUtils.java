@@ -223,7 +223,8 @@ public class ConfigurationUtils {
         if (UserInputs.contains(UserInputs.CONFIGURE_END_TIME, commandString))
             return getConfigurationResult(ConfigurationType.END_TIME, commandString, UserInputs.CONFIGURE_END_TIME);
         if (UserInputs.contains(UserInputs.CONFIGURE_ADD_DAY_OF_WEEK_ARR, commandString)) {
-            String specificInput = UserInputs.getSpecificFromArray(UserInputs.CONFIGURE_ADD_RULE_ID_ARR, commandString);
+            String specificInput = UserInputs.getSpecificFromArray(UserInputs.CONFIGURE_ADD_DAY_OF_WEEK_ARR,
+                    commandString);
             return getConfigurationResult(ConfigurationType.DAY_OF_WEEK, commandString, specificInput,
                     ConfigurationAction.ADD);
         }

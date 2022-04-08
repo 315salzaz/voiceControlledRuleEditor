@@ -28,7 +28,8 @@ public class TTSConstants {
     public static String SELECT_CONDITION_TYPE = "Please select condition type";
     public static String CONFIGURATION_NOT_FOUND = "Configuration %s not found";
     public static String ADD_CONFIGURATION = "Please start adding configuration. When finished say \"complete\"";
-    public static String MODULE_CREATED = "Module created";
+    public static String MODULE_CREATED = "Module %s created";
+    public static String MODULE_CHANGED = "Module %s changed";
     public static String MODULE_DELETE_CONFIRMATION = "Module %s will be deleted, this action is permament would you like to confirm?";
     public static String MODULE_DELETED = "Module %s deleted";
 }

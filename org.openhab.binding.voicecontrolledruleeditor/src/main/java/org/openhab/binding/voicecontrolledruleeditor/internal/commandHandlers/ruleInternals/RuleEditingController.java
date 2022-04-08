@@ -20,13 +20,9 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.utils.Configuratio
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleRegistryUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.StringUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
-import org.openhab.core.automation.Action;
-import org.openhab.core.automation.Condition;
 import org.openhab.core.automation.Module;
 import org.openhab.core.automation.Rule;
 import org.openhab.core.automation.RuleRegistry;
-import org.openhab.core.automation.Trigger;
-import org.openhab.core.automation.util.RuleBuilder;
 
 public class RuleEditingController implements ICommandHandler {
     private RuleRegistry ruleRegistry;
@@ -44,7 +40,8 @@ public class RuleEditingController implements ICommandHandler {
     public RuleEditingController(RuleRegistry ruleRegistry) {
         this.ruleRegistry = ruleRegistry;
         handlerState = new RuleEditWaitingForNameState(this);
-        VoiceManagerUtils.say(TTSConstants.EDITTING_RULE_NAME);
+        VoiceManagerUtils.say(TTSConstants.EDITTING_RULE_NAME); // <-- 315salzaz Gets called every time. Transfer to
+                                                                // state prequisite
     }
 
     public void changeState(AbstractHandlerState newState) {
@@ -66,36 +63,6 @@ public class RuleEditingController implements ICommandHandler {
             if (!Arrays.stream(moduleIds).anyMatch(moduleId -> moduleId.equals(currentId)))
                 return currentId;
             currentIndex++;
-        }
-    }
-
-    private void createModule() {
-        var moduleType = moduleBuilderHandler.getModuleType();
-        Module module = moduleBuilderHandler.build(getNextModuleId(ruleRegistry.get(ruleId)));
-
-        Rule ruleToCreateFrom = ruleRegistry.get(ruleId);
-        if (ruleToCreateFrom == null)
-            return;
-
-        RuleBuilder ruleBuilder = RuleBuilder.create(ruleToCreateFrom);
-
-        switch (moduleType) {
-            case TRIGGER:
-                // 315salzaz withTriggers should have existing ones as well.
-                ruleBuilder.withTriggers((Trigger) module);
-                ruleRegistry.update(ruleBuilder.build());
-                return;
-            case ACTION:
-                // 315salzaz withActions should have existing ones as well.
-                ruleBuilder.withActions((Action) module);
-                ruleRegistry.update(ruleBuilder.build());
-                return;
-            case CONDITION:
-                // 315salzaz withActions should have existing ones as well.
-                ruleBuilder.withConditions((Condition) module);
-                ruleRegistry.update(ruleBuilder.build());
-            default:
-                break;
         }
     }
 
@@ -148,16 +115,6 @@ public class RuleEditingController implements ICommandHandler {
         return null;
     }
 
-    private boolean tryComplete(String commandString) {
-        if (!UserInputs.isEquals(UserInputs.COMPLETE, commandString))
-            return false;
-
-        createModule();
-        VoiceManagerUtils.say(TTSConstants.MODULE_CREATED);
-        handlerState = new RuleEditWaitingForModuleTypeState(this);
-        return true;
-    }
-
     public HandleCommandResult handleEditBuilderCommand(String commandString) {
         if (!moduleBuilderHandler.isCreated()) {
             Module module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, ruleRegistry.get(ruleId),
@@ -167,10 +124,21 @@ public class RuleEditingController implements ICommandHandler {
             }
 
             moduleBuilderHandler.createFromModule(module);
+            return null;
         }
 
-        if (tryComplete(commandString))
+        if (UserInputs.isEquals(UserInputs.COMPLETE, commandString)) {
+            VoiceManagerUtils.say(String.format(TTSConstants.MODULE_CHANGED, moduleBuilderHandler.label));
+            handlerState = new RuleEditWaitingForModuleTypeState(this);
+
+            Rule rule = ruleRegistry.get(ruleId);
+            rule = RuleRegistryUtils.ruleWithEditedModule(rule, moduleBuilderHandler.build(ruleId),
+                    moduleBuilderHandler.getModuleType());
+
+            ruleRegistry.update(rule);
+            handlerState = new RuleEditWaitingForModuleTypeState(this);
             return null;
+        }
 
         ConfigurationResult configuration = ConfigurationUtils.extractConfigurationFromCommand(commandString);
         if (configuration == null || configuration.getValue() == null) {
@@ -190,29 +158,44 @@ public class RuleEditingController implements ICommandHandler {
             var module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, rule,
                     moduleBuilderHandler.getModuleType());
 
-            moduleBuilderHandler.createFromModule(module);
+            moduleBuilderHandler.createFromModule(module).withId(module.getId());
             handlerState.updateConfirmationState(ConfirmationState.CONFIRMING);
-
             VoiceManagerUtils.say(String.format(TTSConstants.MODULE_DELETE_CONFIRMATION, module.getLabel()));
             return null;
         }
 
         if (handlerState.getConfirmationState() == ConfirmationState.CONFIRMING) {
             if (UserInputs.isEquals(UserInputs.CONFIRM_ARRAY, commandString)) {
-                
+                var rule = ruleRegistry.get(ruleId);
+                var module = moduleBuilderHandler.build(moduleBuilderHandler.getId());
+
+                VoiceManagerUtils.say(String.format(TTSConstants.MODULE_DELETED, moduleBuilderHandler.label));
+                rule = RuleRegistryUtils.ruleWithRemovedModule(rule, module, moduleBuilderHandler.getModuleType());
+
+                if (rule == null) {
+                    return null;
+                }
+
+                ruleRegistry.update(rule);
+
+                handlerState.updateConfirmationState(ConfirmationState.DONE);
+                handlerState = new RuleEditWaitingForModuleTypeState(this);
+                return null;
             }
 
             if (UserInputs.isEquals(UserInputs.DENY_ARRAY, commandString)) {
-
+                moduleBuilderHandler = null;
+                handlerState.updateConfirmationState(ConfirmationState.NONE);
+                return null;
             }
         }
 
+        VoiceManagerUtils.say(TTSConstants.ERROR_OCCURED);
         return null;
     }
 
-    // 315salzaz rename: handleCreateBuilderCommand
     public HandleCommandResult handleCreateBuilderCommand(String commandString) {
-        // I'd like this to be like rule naming (with confirmation)
+        // 315salzaz I'd like this to be like rule naming (with confirmation)
         if (!moduleBuilderHandler.isCreated()) {
             moduleBuilderHandler.createWithTypeFromCommand(commandString);
             if (moduleBuilderHandler.isCreated())
@@ -226,8 +209,15 @@ public class RuleEditingController implements ICommandHandler {
             return null;
         }
 
-        if (tryComplete(commandString))
+        if (UserInputs.isEquals(UserInputs.COMPLETE, commandString)) {
+            Rule rule = ruleRegistry.get(ruleId);
+            rule = RuleRegistryUtils.ruleWithAddedModule(rule, moduleBuilderHandler.build(getNextModuleId(rule)),
+                    moduleBuilderHandler.getModuleType());
+
+            ruleRegistry.update(rule);
+            handlerState = new RuleEditWaitingForModuleTypeState(this);
             return null;
+        }
 
         ConfigurationResult configuration = ConfigurationUtils.extractConfigurationFromCommand(commandString);
 

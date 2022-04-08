@@ -14,11 +14,19 @@ public class StringUtils {
         int longestMatchLength = 0;
 
         for (int i = 0; i < stringList.length; i++) {
-            int startIndex = stringList[i].indexOf(expression);
+            String configuredExpression = removeSpaces ? StringUtils.withoutSpaces(expression) : expression;
+            String configuredListElement = removeSpaces ? StringUtils.withoutSpaces(stringList[i]) : stringList[i];
+
+            int startIndex = configuredListElement.indexOf(configuredExpression);
             int matchLengthOfCurrent = 0;
 
-            for (int j = startIndex; j < stringList[i].length(); j++) {
-                if (expression.charAt(j - startIndex) == stringList[i].charAt(j)) {
+            if (startIndex < 0) {
+                continue;
+            }
+
+            for (int j = startIndex; j < configuredListElement.length() || j < configuredExpression.length(); j++) {
+
+                if (configuredExpression.charAt(j - startIndex) == configuredListElement.charAt(j)) {
                     matchLengthOfCurrent++;
                 } else {
                     break;

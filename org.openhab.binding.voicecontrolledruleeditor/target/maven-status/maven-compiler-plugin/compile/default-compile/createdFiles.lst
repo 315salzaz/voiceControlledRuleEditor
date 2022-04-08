@@ -6,6 +6,7 @@ org\openhab\binding\voicecontrolledruleeditor\internal\utils\ItemUtils.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleRename\RuleRenameWaitingForNewNameState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\UsersCommandHandler.class
 org\openhab\binding\voicecontrolledruleeditor\internal\VoiceControlledRuleEditorHandler.class
+META-INF\MANIFEST.MF
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditEditModuleState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\IBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\VoiceManagerUtils.class
@@ -22,11 +23,13 @@ org\openhab\binding\voicecontrolledruleeditor\internal\factory\VoiceControlledRu
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleActionBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditWaitingForModuleTypeState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\ConfigurationUtils.class
+NOTICE
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleConditionBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ICommandHandler.class
 org\openhab\binding\voicecontrolledruleeditor\internal\constants\Enums$ModuleType.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleEditingController.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\RuleReaderController.class
+org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\AbstractHandlerState$ConfirmationState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\ConfigurationResult$ConfigurationAction.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditRemoveModuleState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleExternals\RuleRenamingHandler.class
