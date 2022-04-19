@@ -2,6 +2,8 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.r
 
 import java.util.Arrays;
 
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.Instructions;
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.StatusReport;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState;
@@ -52,8 +54,8 @@ public class RuleRenamingHandler implements ICommandHandler {
         }
 
         oldRuleName = ruleName;
-        VoiceManagerUtils.say(String.format(TTSConstants.RENAMING_OLD_RULE, ruleName) + TTSConstants.NAME_RULE);
         handlerState = new RuleRenameWaitingForNewNameState(this);
+        VoiceManagerUtils.say(String.format(TTSConstants.RENAMING_OLD_RULE, ruleName) + " " + TTSConstants.NAME_RULE);
         return null;
     }
 
@@ -86,6 +88,26 @@ public class RuleRenamingHandler implements ICommandHandler {
 
         VoiceManagerUtils.say(String.format(TTSConstants.COMMAND_NOT_FOUND, command));
         return null;
+    }
+
+    public void oldNameStatus() {
+        StatusReport.renameRuleOldName();
+    }
+
+    public void oldNameInstruction() {
+        Instructions.enterRuleName();
+    }
+
+    public void newNameStatus() {
+        StatusReport.renameRuleNewName();
+    }
+
+    public void newNameInstruction() {
+        Instructions.enterRuleName();
+    }
+
+    public void newNameConfirmationStatus() {
+        StatusReport.renameRuleNewNameConfirmation();
     }
 
     public HandleCommandResult doHandleCommand(String commandString) {

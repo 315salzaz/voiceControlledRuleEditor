@@ -15,4 +15,24 @@ public class RuleEditCreateModuleState extends AbstractHandlerState {
     public HandleCommandResult handleCommand(String commandString) {
         return ((RuleEditingController) handler).handleCreateBuilderCommand(commandString);
     }
+
+    @Override
+    public boolean tryHandleInstructions(String commandString) {
+        if (super.tryHandleInstructions(commandString)) {
+            ((RuleEditingController) handler).createBuilderInstruction(commandString);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean tryHandleStatusReport(String commandString) {
+        if (super.tryHandleStatusReport(commandString)) {
+            ((RuleEditingController) handler).createBuilderStatus();
+            return true;
+        }
+
+        return false;
+    }
 }

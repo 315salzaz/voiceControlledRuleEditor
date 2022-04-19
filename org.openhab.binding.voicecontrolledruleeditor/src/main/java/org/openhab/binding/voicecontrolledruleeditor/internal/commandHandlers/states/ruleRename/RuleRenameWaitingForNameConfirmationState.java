@@ -15,4 +15,24 @@ public class RuleRenameWaitingForNameConfirmationState extends AbstractHandlerSt
     public HandleCommandResult handleCommand(String commandString) {
         return ((RuleRenamingHandler) handler).handleNameConfirmation(commandString);
     }
+
+    @Override
+    public boolean tryHandleInstructions(String commandString) {
+        if (super.tryHandleInstructions(commandString)) {
+            ((RuleRenamingHandler) handler).newNameConfirmationStatus();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean tryHandleStatusReport(String commandString) {
+        if (super.tryHandleStatusReport(commandString)) {
+            ((RuleRenamingHandler) handler).newNameConfirmationStatus();
+            return true;
+        }
+
+        return false;
+    }
 }

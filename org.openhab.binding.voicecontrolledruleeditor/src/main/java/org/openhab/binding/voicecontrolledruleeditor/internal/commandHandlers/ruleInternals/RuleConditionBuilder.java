@@ -79,4 +79,10 @@ public class RuleConditionBuilder extends AbstractModuleBuilder {
     public ModuleType getModuleType() {
         return ModuleType.CONDITION;
     }
+
+    @Override
+    public String[] getTypeGroups() {
+
+        return null;
+    }
 }

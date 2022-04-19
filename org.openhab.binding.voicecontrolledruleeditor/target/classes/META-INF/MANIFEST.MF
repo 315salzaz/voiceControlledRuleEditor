@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Automatic-Module-Name: org.openhab.binding.voicecontrolledruleeditor
-Bnd-LastModified: 1649364982366
+Bnd-LastModified: 1650398215716
 Bundle-Description: This project contains the official add-ons of open
  HAB
 Bundle-Developers: openhab;email="info@openhab.org";name=openHAB;organ
@@ -22,7 +22,7 @@ Bundle-SCM: url="https://github.com/openhab/openhab-addons/org.openhab
  ding.voicecontrolledruleeditor",tag=HEAD
 Bundle-SymbolicName: org.openhab.binding.voicecontrolledruleeditor
 Bundle-Vendor: openHAB.org
-Bundle-Version: 3.3.0.202204072056
+Bundle-Version: 3.3.0.202204191956
 Created-By: 11.0.14 (Azul Systems, Inc.)
 Import-Package: org.openhab.core,org.openhab.core.audio,org.openhab.co
  re.automation,org.openhab.core.automation.util,org.openhab.core.commo
@@ -31,17 +31,18 @@ Import-Package: org.openhab.core,org.openhab.core.audio,org.openhab.co
  s,org.openhab.core.voice
 Private-Package: OH-INF.binding,OH-INF.i18n,OH-INF.thing,org.openhab.b
  inding.voicecontrolledruleeditor.internal,org.openhab.binding.voiceco
- ntrolledruleeditor.internal.commandHandlers,org.openhab.binding.voice
- controlledruleeditor.internal.commandHandlers.ruleExternals,org.openh
- ab.binding.voicecontrolledruleeditor.internal.commandHandlers.ruleInt
- ernals,org.openhab.binding.voicecontrolledruleeditor.internal.command
- Handlers.states,org.openhab.binding.voicecontrolledruleeditor.interna
- l.commandHandlers.states.ruleAdd,org.openhab.binding.voicecontrolledr
- uleeditor.internal.commandHandlers.states.ruleEdit,org.openhab.bindin
- g.voicecontrolledruleeditor.internal.commandHandlers.states.ruleRenam
- e,org.openhab.binding.voicecontrolledruleeditor.internal.constants,or
- g.openhab.binding.voicecontrolledruleeditor.internal.factory,org.open
- hab.binding.voicecontrolledruleeditor.internal.utils
+ ntrolledruleeditor.internal.assistant,org.openhab.binding.voicecontro
+ lledruleeditor.internal.commandHandlers,org.openhab.binding.voicecont
+ rolledruleeditor.internal.commandHandlers.ruleExternals,org.openhab.b
+ inding.voicecontrolledruleeditor.internal.commandHandlers.ruleInterna
+ ls,org.openhab.binding.voicecontrolledruleeditor.internal.commandHand
+ lers.states,org.openhab.binding.voicecontrolledruleeditor.internal.co
+ mmandHandlers.states.ruleAdd,org.openhab.binding.voicecontrolledrulee
+ ditor.internal.commandHandlers.states.ruleEdit,org.openhab.binding.vo
+ icecontrolledruleeditor.internal.commandHandlers.states.ruleRename,or
+ g.openhab.binding.voicecontrolledruleeditor.internal.constants,org.op
+ enhab.binding.voicecontrolledruleeditor.internal.factory,org.openhab.
+ binding.voicecontrolledruleeditor.internal.utils
 Provide-Capability: osgi.service;objectClass:List<String>="org.openhab
  .core.thing.binding.ThingHandlerFactory";uses:="org.openhab.core.thin
  g.binding"

@@ -112,4 +112,9 @@ public class RuleTriggerBuilderHandler extends AbstractModuleBuilder {
     public Enums.ModuleType getModuleType() {
         return ModuleType.TRIGGER;
     }
+
+    @Override
+    public String[] getTypeGroups() {
+        return null;
+    }
 }

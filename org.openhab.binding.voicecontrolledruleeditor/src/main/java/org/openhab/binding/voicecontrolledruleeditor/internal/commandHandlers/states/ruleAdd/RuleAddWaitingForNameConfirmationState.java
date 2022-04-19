@@ -15,4 +15,24 @@ public class RuleAddWaitingForNameConfirmationState extends AbstractHandlerState
     public HandleCommandResult handleCommand(String commandString) {
         return ((RuleAddingHandler) handler).handleNameConfirmation(commandString);
     }
+
+    @Override
+    public boolean tryHandleInstructions(String commandString) {
+        if (super.tryHandleInstructions(commandString)) {
+            ((RuleAddingHandler) handler).nameConfirmationStatus();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean tryHandleStatusReport(String commandString) {
+        if (super.tryHandleStatusReport(commandString)) {
+            ((RuleAddingHandler) handler).nameConfirmationStatus();
+            return true;
+        }
+
+        return false;
+    }
 }

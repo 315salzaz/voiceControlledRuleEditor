@@ -1,5 +1,7 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers;
 
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.Instructions;
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.StatusReport;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
@@ -12,9 +14,13 @@ public class DefaultController implements ICommandHandler {
 
     @Override
     public HandleCommandResult doHandleCommand(String commandString) {
-        // For debug purpose. Remove after
-        if (commandString.equals("status report")) {
-            VoiceManagerUtils.say("default controller");
+        if (StatusReport.isStatusReportCommand(commandString)) {
+            StatusReport.waitingForCommand();
+            return null;
+        }
+
+        if (Instructions.isInstructionsCommand(commandString)) {
+            Instructions.waitingForCommand();
             return null;
         }
 

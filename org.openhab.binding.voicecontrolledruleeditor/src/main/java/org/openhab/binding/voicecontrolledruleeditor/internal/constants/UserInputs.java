@@ -1,9 +1,13 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.constants;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
+
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.StringUtils;
 
 public class UserInputs {
+    public static String STATUS_REPORT = "status report";
+    public static String TELL_ME_HOW = "tell me how";
+
     public static String[] CREATE_NEW_RULE_ARR = { "create", "new" };
     public static String[] RENAME_RULE = { "rename", " rule" };
     public static String[] BEGIN_EDITING = { "begin", "editing" };
@@ -101,27 +105,35 @@ public class UserInputs {
     public static String CONFIGURE_AUDIO_OUTPUT = "set audio output to number ";
     public static String CONFIGURE_SOUND = "set sound to number ";
     // 315salzaz could be combined
-    public static String CONFIGURE_TEXT = "set text to";
-    public static String CONFIGURE_MESSAGE = "set message to";
+    public static String CONFIGURE_TEXT = "set text to ";
+    public static String CONFIGURE_MESSAGE = "set message to ";
     public static String CONFIGURE_USER_EMAIL = "set user email to ";
-
-    public static boolean isEquals(String[] userInputConst, String commandString) {
-        return Arrays.stream(userInputConst).anyMatch(x -> commandString.equals(x));
-    }
 
     public static boolean isEquals(String userInputConst, String commandString) {
         return userInputConst.equals(commandString);
     }
 
-    public static boolean contains(String[] userInputConst, String commandString) {
-        return Arrays.stream(userInputConst).anyMatch(x -> commandString.contains(x));
+    public static boolean isEquals(String[] userInputConst, String commandString) {
+        return Arrays.stream(userInputConst).anyMatch(x -> isEquals(x, commandString));
     }
 
     public static boolean contains(String userInputConst, String commandString) {
         return commandString.contains(userInputConst);
     }
 
+    public static boolean contains(String[] userInputConst, String commandString) {
+        return Arrays.stream(userInputConst).anyMatch(x -> contains(x, commandString));
+    }
+
+    public static boolean beginsWith(String userInputConst, String commandString) {
+        return commandString.indexOf(userInputConst) == 0;
+    }
+
+    public static boolean beginsWith(String[] userInputConst, String commandString) {
+        return Arrays.stream(userInputConst).anyMatch(x -> beginsWith(x, commandString));
+    }
+
     public static String getSpecificFromArray(String[] array, String command) {
-        return Stream.of(array).filter(a -> command.contains(a)).findFirst().orElse(null);
+        return StringUtils.getSpecificFromArray(array, command);
     }
 }

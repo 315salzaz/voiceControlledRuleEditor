@@ -15,6 +15,7 @@ public class TTSConstants {
     public static String EDITING_RULE = "Editing rule %s.";
     public static String SELECT_EDITING_TYPE = "Would you like to edit action, trigger or conditon?";
     public static String RULE_EDITING_CANCELED = "Rule editing canceled";
+    public static String EDIT_RULE_WAITING_FOR_EDIT_TYPE = "Please select rule editing type";
 
     public static String ADD_LABEL = "Please add label";
     public static String ERROR_OCCURED = "An error has occured.";
@@ -32,4 +33,28 @@ public class TTSConstants {
     public static String MODULE_CHANGED = "Module %s changed";
     public static String MODULE_DELETE_CONFIRMATION = "Module %s will be deleted, this action is permament would you like to confirm?";
     public static String MODULE_DELETED = "Module %s deleted";
+
+    // Status reporting
+    public static String STATUS_WAITING_FOR_COMMAND = "Waiting for command";
+    public static String STATUS_CREATING_RULE_WAITING_FOR_RULE_NAME = "Creating rule, waiting for rule name";
+    public static String STATUS_CONFIRM_NEW_RULE_NAME = CONFIRM_NEW_RULE_NAME;
+    public static String STATUS_RULE_CREATED_START_EDITING_CONFIRMATION = RULE_CREATED_START_EDITING_CONFIRMATION;
+    public static String STATUS_RENAME_RULE_OLD_NAME = RENAME_OLD_RULE_NAME;
+    public static String STATUS_RENAME_RULE_NEW_NAME = NAME_RULE;
+    public static String STATUS_RENAME_RULE_NEW_NAME_CONFIRMATION = CONFIRM_NEW_RULE_NAME;
+    public static String STATUS_EDIT_RULE_NAME_INPUT = EDITTING_RULE_NAME;
+    public static String STATUS_EDIT_RULE_WAITING_FOR_EDIT_TYPE = EDIT_RULE_WAITING_FOR_EDIT_TYPE;
+
+    public static String STATUS_EDIT_MODULE_WAITING_FOR_MODULE_TYPE = "Waiting for %s module type";
+    public static String STATUS_EDIT_MODULE_WAITING_FOR_LABEL = "Waiting for label";
+
+    // Instructions
+    public static String INSTRUCTION_WAITING_FOR_COMMAND = "You can: create new rule, rename rule or begin editing";
+    public static String INSTRUCTION_ENTER_RULE_NAME = "Enter rule name";
+    public static String INSTRUCTION_EDIT_RULE_WAITING_FOR_EDIT_TYPE = "State the action, create, edit or remove and module type, trigger, action or condition. For example create trigger";
+
+    public static String INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE = "Select between %s, for example tell me how %s";
+    public static String INSTRUCTION_EDIT_MODULE_WAITING_FOR_LABEL = "Enter label";
+
+    public static String INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE_FOR_GROUP = "Available commands %s";
 }

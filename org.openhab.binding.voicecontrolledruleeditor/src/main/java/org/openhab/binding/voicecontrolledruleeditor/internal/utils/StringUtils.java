@@ -1,5 +1,7 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.utils;
 
+import java.util.stream.Stream;
+
 public class StringUtils {
     public static String withoutSpaces(String string) {
         return string.replaceAll("\\s+", "");
@@ -40,5 +42,9 @@ public class StringUtils {
         }
 
         return longestMatchString;
+    }
+
+    public static String getSpecificFromArray(String[] array, String specific) {
+        return Stream.of(array).filter(a -> specific.contains(a)).findFirst().orElse(null);
     }
 }

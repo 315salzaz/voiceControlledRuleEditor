@@ -2,6 +2,8 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.r
 
 import java.util.Arrays;
 
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.Instructions;
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.StatusReport;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState;
@@ -28,11 +30,6 @@ public class RuleAddingHandler implements ICommandHandler {
     public RuleAddingHandler(RuleRegistry ruleRegistry) {
         this.ruleRegistry = ruleRegistry;
         handlerState = new RuleAddWaitingForNameState(this);
-
-        initializeDialog();
-    }
-
-    private void initializeDialog() {
         VoiceManagerUtils.say(TTSConstants.NAME_RULE);
     }
 
@@ -70,15 +67,15 @@ public class RuleAddingHandler implements ICommandHandler {
 
         currentRuleName = ruleName;
         handlerState = new RuleAddWaitingForNameConfirmationState(this);
-        VoiceManagerUtils.say(String.format(TTSConstants.CONFIRM_NEW_RULE_NAME, ruleName));
+        StatusReport.waitingForRuleNameConfirmation(currentRuleName);
         return null;
     }
 
     public HandleCommandResult handleNameConfirmation(String command) {
         if (Arrays.stream(UserInputs.CONFIRM_ARRAY).anyMatch(confirmation -> confirmation.equals(command))) {
             addRule(currentRuleName);
-            handlerState = new RuleAddWaitingForEditConfirmation(this);
 
+            handlerState = new RuleAddWaitingForEditConfirmation(this);
             VoiceManagerUtils.say(TTSConstants.RULE_CREATED_START_EDITING_CONFIRMATION);
             return null;
         }
@@ -104,10 +101,30 @@ public class RuleAddingHandler implements ICommandHandler {
         return null;
     }
 
+    public void nameInputStatus() {
+        StatusReport.createRuleWaitingForName();
+    }
+
+    public void nameInputInstruction() {
+        Instructions.enterRuleName();
+    }
+
+    public void nameConfirmationStatus() {
+        StatusReport.waitingForRuleNameConfirmation(currentRuleName);
+    }
+
+    public void editingConfirmationStatus() {
+        StatusReport.waitingForEditingConfirmation();
+    }
+
     public HandleCommandResult doHandleCommand(String commandString) {
         if (commandString.equals("cancel")) {
             VoiceManagerUtils.say(TTSConstants.RULE_CREATION_CANCELED);
             return new HandleCommandResult(BaseHandlerState.DEFAULT);
+        }
+
+        if (handlerState.tryHandleInstructions(commandString) || handlerState.tryHandleStatusReport(commandString)) {
+            return null;
         }
 
         return handlerState.handleCommand(commandString);

@@ -1,5 +1,7 @@
 package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states;
 
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.Instructions;
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.StatusReport;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 
@@ -26,4 +28,14 @@ public abstract class AbstractHandlerState {
     }
 
     public abstract HandleCommandResult handleCommand(String commandString);
+
+    // Must override with super()
+    public boolean tryHandleInstructions(String commandString) {
+        return Instructions.isInstructionsCommand(commandString);
+    }
+
+    // Must override with super()
+    public boolean tryHandleStatusReport(String commandString) {
+        return StatusReport.isStatusReportCommand(commandString);
+    }
 }

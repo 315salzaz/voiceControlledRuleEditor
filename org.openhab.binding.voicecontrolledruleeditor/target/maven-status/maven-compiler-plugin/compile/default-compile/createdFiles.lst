@@ -16,12 +16,12 @@ org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ru
 org\openhab\binding\voicecontrolledruleeditor\internal\constants\Enums.class
 org\openhab\binding\voicecontrolledruleeditor\internal\VoiceControlledRuleEditorHandler$IdentifiedCommand.class
 org\openhab\binding\voicecontrolledruleeditor\internal\constants\UserInputs.class
+org\openhab\binding\voicecontrolledruleeditor\internal\assistant\StatusReport.class
 org\openhab\binding\voicecontrolledruleeditor\internal\UserInformation.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleAdd\RuleAddWaitingForEditConfirmation.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleTriggerBuilderHandler.class
 org\openhab\binding\voicecontrolledruleeditor\internal\factory\VoiceControlledRuleEditorHandlerFactory.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleActionBuilder.class
-org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditWaitingForModuleTypeState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\ConfigurationUtils.class
 NOTICE
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleConditionBuilder.class
@@ -33,6 +33,8 @@ org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\Ab
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\ConfigurationResult$ConfigurationAction.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditRemoveModuleState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleExternals\RuleRenamingHandler.class
+org\openhab\binding\voicecontrolledruleeditor\internal\assistant\Instructions.class
+org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditWaitingForEditTypeState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\RuleRegistryUtils.class
 org\openhab\binding\voicecontrolledruleeditor\internal\constants\Enums$ConfigurationType.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\AbstractHandlerState.class
@@ -43,6 +45,7 @@ org\openhab\binding\voicecontrolledruleeditor\internal\utils\ThingUtils.class
 org\openhab\binding\voicecontrolledruleeditor\internal\VoiceControlledRuleEditorConfiguration.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleAdd\RuleAddWaitingForNameConfirmationState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\constants\ModuleTypes.class
+org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleExternals\RuleDeletingHandler.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\AvailableConfigurationType.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditWaitingForNameState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleRename\RuleRenameWaitingForNameConfirmationState.class

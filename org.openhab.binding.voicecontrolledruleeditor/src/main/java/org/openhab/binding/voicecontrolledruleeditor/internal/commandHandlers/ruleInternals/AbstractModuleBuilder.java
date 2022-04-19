@@ -41,6 +41,8 @@ public abstract class AbstractModuleBuilder {
 
     public abstract Module build(String id);
 
+    public abstract String[] getTypeGroups();
+
     // 315salzaz Should get called by `build()` before actually building
     protected ConfigurationType[] getMissingProperties() {
         var missingPropertiesStream = Arrays.stream(availableConfigurations)

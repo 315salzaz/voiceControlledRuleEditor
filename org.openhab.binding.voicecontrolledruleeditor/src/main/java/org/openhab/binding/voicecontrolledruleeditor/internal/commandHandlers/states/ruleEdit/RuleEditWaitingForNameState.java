@@ -15,4 +15,24 @@ public class RuleEditWaitingForNameState extends AbstractHandlerState {
     public HandleCommandResult handleCommand(String commandString) {
         return ((RuleEditingController) handler).handleNameInputed(commandString);
     }
+
+    @Override
+    public boolean tryHandleInstructions(String commandString) {
+        if (super.tryHandleInstructions(commandString)) {
+            ((RuleEditingController) handler).nameInputInstruction();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean tryHandleStatusReport(String commandString) {
+        if (super.tryHandleStatusReport(commandString)) {
+            ((RuleEditingController) handler).nameInputStatus();
+            return true;
+        }
+
+        return false;
+    }
 }

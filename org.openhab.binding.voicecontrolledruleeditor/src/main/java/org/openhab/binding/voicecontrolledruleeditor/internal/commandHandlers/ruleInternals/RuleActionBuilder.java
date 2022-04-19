@@ -94,6 +94,11 @@ public class RuleActionBuilder extends AbstractModuleBuilder {
         return this;
     }
 
+    public String[] getTypeGroups() {
+
+        return null;
+    }
+
     public Module build(String id) {
         Configuration config = new Configuration(getConfigurationProperties());
         return ActionBuilder.create().withId(id).withLabel(label).withTypeUID(type).withConfiguration(config).build();

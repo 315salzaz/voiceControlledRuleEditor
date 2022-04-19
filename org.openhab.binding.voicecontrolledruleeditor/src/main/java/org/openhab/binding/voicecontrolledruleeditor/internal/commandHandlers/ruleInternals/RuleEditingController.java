@@ -3,6 +3,8 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.r
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.Instructions;
+import org.openhab.binding.voicecontrolledruleeditor.internal.assistant.StatusReport;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.HandleCommandResult;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ICommandHandler;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.AbstractHandlerState;
@@ -10,7 +12,7 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.st
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditCreateModuleState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditEditModuleState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditRemoveModuleState;
-import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditWaitingForModuleTypeState;
+import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditWaitingForEditTypeState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.states.ruleEdit.RuleEditWaitingForNameState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
@@ -32,20 +34,18 @@ public class RuleEditingController implements ICommandHandler {
     private AbstractHandlerState handlerState;
 
     public RuleEditingController(RuleRegistry ruleRegistry, String ruleId) {
-        this(ruleRegistry);
         this.ruleId = ruleId;
-        handlerState = new RuleEditWaitingForModuleTypeState(this);
+        this.ruleRegistry = ruleRegistry;
+        handlerState = new RuleEditWaitingForEditTypeState(this);
+        VoiceManagerUtils
+                .say(String.format(TTSConstants.EDITING_RULE + " " + TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE,
+                        ruleRegistry.get(ruleId).getName()));
     }
 
     public RuleEditingController(RuleRegistry ruleRegistry) {
         this.ruleRegistry = ruleRegistry;
         handlerState = new RuleEditWaitingForNameState(this);
-        VoiceManagerUtils.say(TTSConstants.EDITTING_RULE_NAME); // <-- 315salzaz Gets called every time. Transfer to
-                                                                // state prequisite
-    }
-
-    public void changeState(AbstractHandlerState newState) {
-        handlerState = newState;
+        VoiceManagerUtils.say(TTSConstants.EDITTING_RULE_NAME);
     }
 
     private String getNextModuleId(Rule rule) {
@@ -79,9 +79,9 @@ public class RuleEditingController implements ICommandHandler {
 
         ruleId = rule.getUID();
 
-        handlerState = new RuleEditWaitingForModuleTypeState(this);
-        // 315salzaz Voice managers should get transferred to state ctros
-        VoiceManagerUtils.say(String.format(TTSConstants.EDITING_RULE, rule.getName()));
+        handlerState = new RuleEditWaitingForEditTypeState(this);
+        VoiceManagerUtils.say(String.format(
+                TTSConstants.EDITING_RULE + " " + TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE, rule.getName()));
         return null;
     }
 
@@ -129,14 +129,13 @@ public class RuleEditingController implements ICommandHandler {
 
         if (UserInputs.isEquals(UserInputs.COMPLETE, commandString)) {
             VoiceManagerUtils.say(String.format(TTSConstants.MODULE_CHANGED, moduleBuilderHandler.label));
-            handlerState = new RuleEditWaitingForModuleTypeState(this);
 
             Rule rule = ruleRegistry.get(ruleId);
             rule = RuleRegistryUtils.ruleWithEditedModule(rule, moduleBuilderHandler.build(ruleId),
                     moduleBuilderHandler.getModuleType());
 
             ruleRegistry.update(rule);
-            handlerState = new RuleEditWaitingForModuleTypeState(this);
+            handlerState = new RuleEditWaitingForEditTypeState(this);
             return null;
         }
 
@@ -179,7 +178,7 @@ public class RuleEditingController implements ICommandHandler {
                 ruleRegistry.update(rule);
 
                 handlerState.updateConfirmationState(ConfirmationState.DONE);
-                handlerState = new RuleEditWaitingForModuleTypeState(this);
+                handlerState = new RuleEditWaitingForEditTypeState(this);
                 return null;
             }
 
@@ -215,7 +214,7 @@ public class RuleEditingController implements ICommandHandler {
                     moduleBuilderHandler.getModuleType());
 
             ruleRegistry.update(rule);
-            handlerState = new RuleEditWaitingForModuleTypeState(this);
+            handlerState = new RuleEditWaitingForEditTypeState(this);
             return null;
         }
 
@@ -232,6 +231,47 @@ public class RuleEditingController implements ICommandHandler {
         return null;
     }
 
+    // 315salzaz neither of these are connected to THE FUCKING INPUT
+    public void typeInputStatus() {
+        StatusReport.editRuleTypeInput();
+    }
+
+    public void typeInputInstruction() {
+        Instructions.editRuleTypeInput();
+    }
+
+    public void nameInputStatus() {
+        StatusReport.editRuleNameInput();
+    }
+
+    public void nameInputInstruction() {
+        Instructions.enterRuleName();
+    }
+
+    public void createBuilderStatus() {
+        if (!moduleBuilderHandler.isCreated()) {
+            StatusReport.editModuleWaitingForModuleType(moduleBuilderHandler.getModuleType().value);
+            return;
+        }
+
+        if (!moduleBuilderHandler.hasLabel()) {
+
+            return;
+        }
+    }
+
+    public void createBuilderInstruction(String commandString) {
+        if (!moduleBuilderHandler.isCreated()) {
+            Instructions.editModuleWaitingForModuleType(moduleBuilderHandler, commandString);
+            return;
+        }
+
+        if (!moduleBuilderHandler.hasLabel()) {
+
+            return;
+        }
+    }
+
     public HandleCommandResult doHandleCommand(String commandString) {
         if (commandString.equals(UserInputs.CANCEL)) {
             VoiceManagerUtils.say(TTSConstants.RULE_EDITING_CANCELED);
@@ -239,7 +279,18 @@ public class RuleEditingController implements ICommandHandler {
         }
 
         if (commandString.equals(UserInputs.BACK)) {
-            VoiceManagerUtils.say(TTSConstants.SELECT_TRIGGER_TYPE);
+            if (ruleId == null) {
+                return null;
+            }
+
+            handlerState = new RuleEditWaitingForEditTypeState(this);
+            VoiceManagerUtils
+                    .say(String.format(TTSConstants.EDITING_RULE + " " + TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE,
+                            ruleRegistry.get(ruleId).getName()));
+            return null;
+        }
+
+        if (handlerState.tryHandleInstructions(commandString) || handlerState.tryHandleStatusReport(commandString)) {
             return null;
         }
 
