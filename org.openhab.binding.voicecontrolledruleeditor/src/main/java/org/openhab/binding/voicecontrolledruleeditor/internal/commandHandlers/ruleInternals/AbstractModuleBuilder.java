@@ -35,7 +35,19 @@ public abstract class AbstractModuleBuilder {
         return this;
     }
 
-    protected abstract AvailableConfigurationType[] getAvailableConfigurationTypes(ModuleTypeValue moduleType);
+    protected abstract AvailableConfigurationType[] getAvailableConfigurationTypes(ModuleTypeValue moduleTypeValue);
+
+    public AvailableConfigurationType[] getAvailableConfigurations() {
+        return availableConfigurations;
+    }
+
+    public AvailableConfigurationType[] getMissingAvailableConfigurations() {
+        var missingPropertiesStream = Arrays.stream(availableConfigurations)
+                .filter(ac -> ac.required && !configurationProperties.containsKey(ac.type.type))
+                .toArray(AvailableConfigurationType[]::new);
+
+        return missingPropertiesStream;
+    }
 
     public abstract Enums.ModuleType getModuleType();
 
@@ -61,7 +73,6 @@ public abstract class AbstractModuleBuilder {
 
         switch (configuration.getConfigurationAction()) {
             case ADD:
-                // 315salzaz TEST THIS A.S.A.P.
                 if (currentValue == null) {
                     currentValue = new ArrayList<String>();
                 }

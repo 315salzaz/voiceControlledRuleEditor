@@ -20,33 +20,38 @@ public class RuleTriggerBuilderHandler extends AbstractModuleBuilder {
     protected AvailableConfigurationType[] getAvailableConfigurationTypes(ModuleTypeValue moduleType) {
         switch (moduleType) {
             case TRIGGER_SYSTEM_START_LEVEL:
-                return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.START_LEVEL, true) };
+                return new AvailableConfigurationType[] { new AvailableConfigurationType(ConfigurationType.START_LEVEL,
+                        true, UserInputs.CONFIGURE_START_LEVEL) };
             case TRIGGER_THING_STATUS_CHANGES:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.THING_ID, true),
-                        new AvailableConfigurationType(ConfigurationType.PREVIOUS_STATUS, true),
-                        new AvailableConfigurationType(ConfigurationType.STATUS, true) };
+                        new AvailableConfigurationType(ConfigurationType.THING_ID, true, UserInputs.CONFIGURE_THING_ID),
+                        new AvailableConfigurationType(ConfigurationType.PREVIOUS_STATUS, true,
+                                UserInputs.CONFIGURE_PREVIOUS_STATUS),
+                        new AvailableConfigurationType(ConfigurationType.STATUS, true, UserInputs.CONFIGURE_STATUS) };
             case TRIGGER_THING_STATUS_UPDATE:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.THING_ID, true),
-                        new AvailableConfigurationType(ConfigurationType.STATUS, true) };
+                        new AvailableConfigurationType(ConfigurationType.THING_ID, true, UserInputs.CONFIGURE_THING_ID),
+                        new AvailableConfigurationType(ConfigurationType.STATUS, true, UserInputs.CONFIGURE_STATUS) };
             case TRIGGER_ITEM_COMMAND_TRIGGER:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true),
-                        new AvailableConfigurationType(ConfigurationType.COMMAND, true) };
+                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true,
+                                UserInputs.CONFIGURE_ITEM_NAME),
+                        new AvailableConfigurationType(ConfigurationType.COMMAND, true, UserInputs.CONFIGURE_COMMAND) };
             case TRIGGER_ITEM_STATE_CHANGES:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true),
-                        new AvailableConfigurationType(ConfigurationType.STATE, true),
-                        new AvailableConfigurationType(ConfigurationType.PREVIOUS_STATE, true) };
+                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true,
+                                UserInputs.CONFIGURE_ITEM_NAME),
+                        new AvailableConfigurationType(ConfigurationType.STATE, true, UserInputs.CONFIGURE_STATE),
+                        new AvailableConfigurationType(ConfigurationType.PREVIOUS_STATE, true,
+                                UserInputs.CONFIGURE_PREVIOUS_STATE) };
             case TRIGGER_ITEM_STATE_UPDATED:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true),
-                        new AvailableConfigurationType(ConfigurationType.STATE, true) };
+                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true,
+                                UserInputs.CONFIGURE_ITEM_NAME),
+                        new AvailableConfigurationType(ConfigurationType.STATE, true, UserInputs.CONFIGURE_STATE) };
             case TRIGGER_FIXED_TIME_OF_DAY:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.TIME, true) };
+                        new AvailableConfigurationType(ConfigurationType.TIME, true, UserInputs.CONFIGURE_TIME) };
             case TRIGGER_CHANNEL_ACTIVATED:
             case TRIGGER_GROUP_MEMBER_RECEIVES_COMMAND:
             case TRIGGER_GROUP_MEMBER_STATE_CHANGES:

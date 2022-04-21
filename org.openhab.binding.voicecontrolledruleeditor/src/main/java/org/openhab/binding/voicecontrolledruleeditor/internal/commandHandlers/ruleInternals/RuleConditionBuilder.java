@@ -21,22 +21,26 @@ public class RuleConditionBuilder extends AbstractModuleBuilder {
 
             case CONDITION_ITEM_STATE:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true),
-                        new AvailableConfigurationType(ConfigurationType.STATE, true),
-                        new AvailableConfigurationType(ConfigurationType.OPERATOR, true) };
+                        new AvailableConfigurationType(ConfigurationType.ITEM_NAME, true,
+                                UserInputs.CONFIGURE_ITEM_NAME),
+                        new AvailableConfigurationType(ConfigurationType.STATE, true, UserInputs.CONFIGURE_STATE),
+                        new AvailableConfigurationType(ConfigurationType.OPERATOR, true,
+                                UserInputs.CONFIGURE_OPERATOR) };
             case CONDITION_TIME_OF_DAY:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.START_TIME, true),
-                        new AvailableConfigurationType(ConfigurationType.END_TIME, true) };
+                        new AvailableConfigurationType(ConfigurationType.START_TIME, true,
+                                UserInputs.CONFIGURE_START_TIME),
+                        new AvailableConfigurationType(ConfigurationType.END_TIME, true,
+                                UserInputs.CONFIGURE_END_TIME) };
             case CONDITION_HOLIDAY:
             case CONDITION_WEEKDAY:
             case CONDITION_WEEKEND:
             case CONDITION_NOT_HOLIDAY:
                 return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.OFFSET, true) };
+                        new AvailableConfigurationType(ConfigurationType.OFFSET, true, UserInputs.CONFIGURE_OFFSET) };
             case CONDITION_DAY_OF_WEEK:
-                return new AvailableConfigurationType[] {
-                        new AvailableConfigurationType(ConfigurationType.DAY_OF_WEEK, true) };
+                return new AvailableConfigurationType[] { new AvailableConfigurationType(ConfigurationType.DAY_OF_WEEK,
+                        true, TTSConstants.ADD_OR_REMOVE_WEEKDAY) };
             default:
                 return null;
         }

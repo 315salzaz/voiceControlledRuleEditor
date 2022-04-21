@@ -28,11 +28,12 @@ public class TTSConstants {
     public static String SELECT_ACTION_TYPE = "Please select action type";
     public static String SELECT_CONDITION_TYPE = "Please select condition type";
     public static String CONFIGURATION_NOT_FOUND = "Configuration %s not found";
-    public static String ADD_CONFIGURATION = "Please start adding configuration. When finished say \"complete\"";
+    public static String ADD_CONFIGURATION = "Please add configuration. When finished say \"complete\"";
     public static String MODULE_CREATED = "Module %s created";
     public static String MODULE_CHANGED = "Module %s changed";
     public static String MODULE_DELETE_CONFIRMATION = "Module %s will be deleted, this action is permament would you like to confirm?";
     public static String MODULE_DELETED = "Module %s deleted";
+    public static String OPERATION_SUCCESSFUL = "Operation successful";
 
     // Status reporting
     public static String STATUS_WAITING_FOR_COMMAND = "Waiting for command";
@@ -47,6 +48,7 @@ public class TTSConstants {
 
     public static String STATUS_EDIT_MODULE_WAITING_FOR_MODULE_TYPE = "Waiting for %s module type";
     public static String STATUS_EDIT_MODULE_WAITING_FOR_LABEL = "Waiting for label";
+    public static String STATUS_EDIT_MODULE_WAITING_FOR_CONFIGURATION = "Waiting for configuration";
 
     // Instructions
     public static String INSTRUCTION_WAITING_FOR_COMMAND = "You can: create new rule, rename rule or begin editing";
@@ -57,4 +59,9 @@ public class TTSConstants {
     public static String INSTRUCTION_EDIT_MODULE_WAITING_FOR_LABEL = "Enter label";
 
     public static String INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE_FOR_GROUP = "Available commands %s";
+    public static String ADD_OR_REMOVE_RULE_WITH_NAME = "Add or remove rule with a name";
+    public static String ADD_OR_REMOVE_WEEKDAY = "Add or remove weekday";
+
+    public static String INSTRUCTION_LIST_MISSING_CONFIGURATIONS = "Missing configurations are, %s";
+    public static String INSTRUCTION_LIST_OF_AVAILABLE_CONFIGURATIONS = "Available configurations are, %s";
 }

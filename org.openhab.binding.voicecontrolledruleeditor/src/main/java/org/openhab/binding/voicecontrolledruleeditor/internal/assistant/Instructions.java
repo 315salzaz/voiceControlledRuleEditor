@@ -25,6 +25,26 @@ public class Instructions {
         VoiceManagerUtils.say(TTSConstants.INSTRUCTION_EDIT_RULE_WAITING_FOR_EDIT_TYPE);
     }
 
+    public static void editModuleWaitingForMissingConfiguration(AbstractModuleBuilder moduleBuilder) {
+        var availableConfigurationInstructionsArray = Stream.of(moduleBuilder.getMissingAvailableConfigurations())
+                .map(c -> c.instruction).toArray(String[]::new);
+
+        var availableConfigurationInstructionsJoined = String.join(", ", availableConfigurationInstructionsArray);
+
+        VoiceManagerUtils.say(String.format(TTSConstants.INSTRUCTION_LIST_MISSING_CONFIGURATIONS,
+                availableConfigurationInstructionsJoined));
+    }
+
+    public static void editModuleWaitingForConfiguration(AbstractModuleBuilder moduleBuilder) {
+        var availableConfigurationInstructionsArray = Stream.of(moduleBuilder.getAvailableConfigurations())
+                .map(c -> c.instruction).toArray(String[]::new);
+
+        var availableConfigurationInstructionsJoined = String.join(", ", availableConfigurationInstructionsArray);
+
+        VoiceManagerUtils.say(String.format(TTSConstants.INSTRUCTION_LIST_OF_AVAILABLE_CONFIGURATIONS,
+                availableConfigurationInstructionsJoined));
+    }
+
     public static void editModuleWaitingForModuleType(AbstractModuleBuilder moduleBuilder, String commandString) {
         String[] splits = commandString.split(" ");
         String[] groups;
@@ -48,8 +68,10 @@ public class Instructions {
         }
 
         if (!Stream.of(groups).anyMatch(g -> Stream.of(splits).anyMatch(s -> s.contains(g)))) {
-            VoiceManagerUtils.say(String.format(TTSConstants.INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE,
-                    String.join(" ", groups), groups[0]));
+            if (splits.length < 4) {
+                VoiceManagerUtils.say(String.format(TTSConstants.INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE,
+                        String.join(", ", groups), groups[0]));
+            }
             return;
         }
 
@@ -58,7 +80,7 @@ public class Instructions {
             if (groupValues != null) {
                 VoiceManagerUtils
                         .say(String.format(TTSConstants.INSTRUCTION_EDIT_MODULE_WAITING_FOR_MODULE_TYPE_FOR_GROUP,
-                                String.join(" ", Stream.of(groupValues).map(v -> v.input).toArray(String[]::new))));
+                                String.join(", ", Stream.of(groupValues).map(v -> v.input).toArray(String[]::new))));
                 return;
             }
         }

@@ -124,6 +124,8 @@ public class RuleEditingController implements ICommandHandler {
             }
 
             moduleBuilderHandler.createFromModule(module);
+            VoiceManagerUtils.say(TTSConstants.ADD_CONFIGURATION);
+
             return null;
         }
 
@@ -136,6 +138,7 @@ public class RuleEditingController implements ICommandHandler {
 
             ruleRegistry.update(rule);
             handlerState = new RuleEditWaitingForEditTypeState(this);
+            VoiceManagerUtils.say(TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE);
             return null;
         }
 
@@ -145,8 +148,10 @@ public class RuleEditingController implements ICommandHandler {
             return null;
         }
 
-        if (moduleBuilderHandler.canAddConfiguration(configuration.getType()))
+        if (moduleBuilderHandler.canAddConfiguration(configuration.getType())) {
             moduleBuilderHandler.withConfiguration(configuration);
+            VoiceManagerUtils.say(TTSConstants.OPERATION_SUCCESSFUL);
+        }
 
         return null;
     }
@@ -215,6 +220,7 @@ public class RuleEditingController implements ICommandHandler {
 
             ruleRegistry.update(rule);
             handlerState = new RuleEditWaitingForEditTypeState(this);
+            VoiceManagerUtils.say(TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE);
             return null;
         }
 
@@ -231,7 +237,6 @@ public class RuleEditingController implements ICommandHandler {
         return null;
     }
 
-    // 315salzaz neither of these are connected to THE FUCKING INPUT
     public void typeInputStatus() {
         StatusReport.editRuleTypeInput();
     }
@@ -248,6 +253,24 @@ public class RuleEditingController implements ICommandHandler {
         Instructions.enterRuleName();
     }
 
+    public void editBuilderStatus() {
+        if (!moduleBuilderHandler.isCreated()) {
+            StatusReport.editModuleWaitingForLabel();
+            return;
+        }
+
+        StatusReport.waitingForModuleConfiguration();
+    }
+
+    public void editBuilderInstruction() {
+        if (!moduleBuilderHandler.isCreated()) {
+            StatusReport.waitingForLabel();
+            return;
+        }
+
+        Instructions.editModuleWaitingForConfiguration(moduleBuilderHandler);
+    }
+
     public void createBuilderStatus() {
         if (!moduleBuilderHandler.isCreated()) {
             StatusReport.editModuleWaitingForModuleType(moduleBuilderHandler.getModuleType().value);
@@ -255,9 +278,11 @@ public class RuleEditingController implements ICommandHandler {
         }
 
         if (!moduleBuilderHandler.hasLabel()) {
-
+            StatusReport.waitingForLabel();
             return;
         }
+
+        StatusReport.waitingForModuleConfiguration();
     }
 
     public void createBuilderInstruction(String commandString) {
@@ -267,8 +292,14 @@ public class RuleEditingController implements ICommandHandler {
         }
 
         if (!moduleBuilderHandler.hasLabel()) {
-
+            StatusReport.waitingForLabel();
             return;
+        }
+
+        if (moduleBuilderHandler.getMissingProperties().length != 0) {
+            Instructions.editModuleWaitingForMissingConfiguration(moduleBuilderHandler);
+        } else {
+            Instructions.editModuleWaitingForConfiguration(moduleBuilderHandler);
         }
     }
 

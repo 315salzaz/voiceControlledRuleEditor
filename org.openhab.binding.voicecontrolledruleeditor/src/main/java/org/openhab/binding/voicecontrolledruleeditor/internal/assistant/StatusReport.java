@@ -17,6 +17,14 @@ public class StatusReport {
         VoiceManagerUtils.say(TTSConstants.STATUS_CREATING_RULE_WAITING_FOR_RULE_NAME);
     }
 
+    public static void waitingForLabel() {
+        VoiceManagerUtils.say(TTSConstants.ADD_LABEL);
+    }
+
+    public static void waitingForModuleConfiguration() {
+        VoiceManagerUtils.say(TTSConstants.STATUS_EDIT_MODULE_WAITING_FOR_CONFIGURATION);
+    }
+
     public static void waitingForRuleNameConfirmation(String ruleName) {
         VoiceManagerUtils.say(String.format(TTSConstants.STATUS_CONFIRM_NEW_RULE_NAME, ruleName));
     }
