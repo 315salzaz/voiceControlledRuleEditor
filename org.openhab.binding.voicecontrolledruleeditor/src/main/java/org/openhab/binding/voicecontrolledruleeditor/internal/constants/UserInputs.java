@@ -109,6 +109,8 @@ public class UserInputs {
     public static String CONFIGURE_MESSAGE = "set message to ";
     public static String CONFIGURE_USER_EMAIL = "set user email to ";
 
+    public static String INSTRUCTION_READ_LABELS = "read labels";
+
     public static boolean isEquals(String userInputConst, String commandString) {
         return userInputConst.equals(commandString);
     }

@@ -15,4 +15,24 @@ public class RuleEditRemoveModuleState extends AbstractHandlerState {
     public HandleCommandResult handleCommand(String commandString) {
         return ((RuleEditingController) handler).handleRemoveBuilderCommand(commandString);
     }
+
+    @Override
+    public boolean tryHandleInstructions(String commandString) {
+        if (super.tryHandleInstructions(commandString)) {
+            ((RuleEditingController) handler).removeBuilderInstruction(commandString);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean tryHandleStatusReport(String commandString) {
+        if (super.tryHandleStatusReport(commandString)) {
+            ((RuleEditingController) handler).removeBuilderStatus();
+            return true;
+        }
+
+        return false;
+    }
 }

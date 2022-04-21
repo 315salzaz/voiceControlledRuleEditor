@@ -19,7 +19,7 @@ public class RuleEditEditModuleState extends AbstractHandlerState {
     @Override
     public boolean tryHandleInstructions(String commandString) {
         if (super.tryHandleInstructions(commandString)) {
-            ((RuleEditingController) handler).editBuilderInstruction();
+            ((RuleEditingController) handler).editBuilderInstruction(commandString);
             return true;
         }
 

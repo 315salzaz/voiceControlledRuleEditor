@@ -60,4 +60,8 @@ public class StatusReport {
     public static void editModuleWaitingForLabel() {
         VoiceManagerUtils.say(TTSConstants.STATUS_EDIT_MODULE_WAITING_FOR_LABEL);
     }
+
+    public static void removeModuleDeleteConfirmation(String moduleLabel) {
+        VoiceManagerUtils.say(String.format(TTSConstants.MODULE_DELETE_CONFIRMATION, moduleLabel));
+    }
 }

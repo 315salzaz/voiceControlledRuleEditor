@@ -3,10 +3,12 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.assistant;
 import java.util.stream.Stream;
 
 import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.ruleInternals.AbstractModuleBuilder;
+import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.ModuleTypeValue;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
+import org.openhab.core.automation.Rule;
 
 public class Instructions {
     public static boolean isInstructionsCommand(String commandString) {
@@ -86,7 +88,28 @@ public class Instructions {
         }
     }
 
-    public static void editModuleWaitingForLabel() {
+    public static void editModuleWaitingForLabel(String commandString, Rule rule, Enums.ModuleType moduleType) {
+        if (UserInputs.contains(UserInputs.INSTRUCTION_READ_LABELS, commandString)) {
+            switch (moduleType) {
+                case ACTION:
+                    var actionLabels = rule.getActions().stream().map(a -> a.getLabel()).toArray(String[]::new);
+                    VoiceManagerUtils.say(String.join(", ", actionLabels));
+                    return;
+                case CONDITION:
+                    var conditionLabels = rule.getConditions().stream().map(c -> c.getLabel()).toArray(String[]::new);
+                    VoiceManagerUtils.say(String.join(", ", conditionLabels));
+                    return;
+                case TRIGGER:
+                    var triggerLabels = rule.getTriggers().stream().map(t -> t.getLabel()).toArray(String[]::new);
+                    VoiceManagerUtils.say(String.join(", ", triggerLabels));
+                    return;
+            }
+        }
+
         VoiceManagerUtils.say(TTSConstants.INSTRUCTION_EDIT_MODULE_WAITING_FOR_LABEL);
+    }
+
+    public static void removeModuleDeleteConfirmation() {
+        VoiceManagerUtils.say(TTSConstants.INSTRUCTION_CONFIRM_OR_DENY);
     }
 }

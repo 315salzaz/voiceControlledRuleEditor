@@ -85,30 +85,47 @@ public class RuleEditingController implements ICommandHandler {
         return null;
     }
 
+    public boolean validHandleType(String commandString) {
+        var actionTypeValid = UserInputs.contains(UserInputs.CREATE_ARR, commandString)
+                || UserInputs.contains(UserInputs.EDIT, commandString)
+                || UserInputs.contains(UserInputs.REMOVE_ARR, commandString);
+
+        var moduleTypeValid = UserInputs.contains(UserInputs.TRIGGER, commandString)
+                || UserInputs.contains(UserInputs.ACTION, commandString)
+                || UserInputs.contains(UserInputs.CONDITION, commandString);
+
+        return actionTypeValid && moduleTypeValid;
+    }
+
     public HandleCommandResult handleTypeInputed(String commandString) {
-        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)) {
-            handlerState = new RuleEditCreateModuleState(this);
-        } else if (UserInputs.contains(UserInputs.EDIT, commandString)) {
-            handlerState = new RuleEditEditModuleState(this);
-        } else if (UserInputs.contains(UserInputs.REMOVE_ARR, commandString)) {
-            handlerState = new RuleEditRemoveModuleState(this);
-        } else {
+        if (!validHandleType(commandString)) {
+            VoiceManagerUtils.say(TTSConstants.TYPE_INVALID);
             return null;
         }
 
         if (UserInputs.contains(UserInputs.TRIGGER, commandString)) {
             moduleBuilderHandler = new RuleTriggerBuilderHandler();
-            VoiceManagerUtils.say(TTSConstants.SELECT_TRIGGER_TYPE);
-            return null;
-        }
-        if (UserInputs.contains(UserInputs.ACTION, commandString)) {
+        } else if (UserInputs.contains(UserInputs.ACTION, commandString)) {
             moduleBuilderHandler = new RuleActionBuilder();
-            VoiceManagerUtils.say(TTSConstants.SELECT_ACTION_TYPE);
+        } else if (UserInputs.contains(UserInputs.CONDITION, commandString)) {
+            moduleBuilderHandler = new RuleConditionBuilder();
+        } else {
             return null;
         }
-        if (UserInputs.contains(UserInputs.CONDITION, commandString)) {
-            moduleBuilderHandler = new RuleConditionBuilder();
-            VoiceManagerUtils.say(TTSConstants.SELECT_CONDITION_TYPE);
+
+        if (UserInputs.contains(UserInputs.CREATE_ARR, commandString)) {
+            handlerState = new RuleEditCreateModuleState(this);
+            VoiceManagerUtils
+                    .say(String.format(TTSConstants.SELECT_MODULE_TYPE, moduleBuilderHandler.getModuleType().value));
+        } else if (UserInputs.contains(UserInputs.EDIT, commandString)) {
+            handlerState = new RuleEditEditModuleState(this);
+            VoiceManagerUtils
+                    .say(String.format(TTSConstants.INPUT_MODULE_LABEL, moduleBuilderHandler.getModuleType().value));
+        } else if (UserInputs.contains(UserInputs.REMOVE_ARR, commandString)) {
+            handlerState = new RuleEditRemoveModuleState(this);
+            VoiceManagerUtils
+                    .say(String.format(TTSConstants.INPUT_MODULE_LABEL, moduleBuilderHandler.getModuleType().value));
+        } else {
             return null;
         }
 
@@ -120,6 +137,7 @@ public class RuleEditingController implements ICommandHandler {
             Module module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, ruleRegistry.get(ruleId),
                     moduleBuilderHandler.getModuleType());
             if (module == null) {
+                VoiceManagerUtils.say(TTSConstants.MODULE_NOT_FOUND);
                 return null;
             }
 
@@ -161,6 +179,11 @@ public class RuleEditingController implements ICommandHandler {
             var rule = ruleRegistry.get(ruleId);
             var module = RuleRegistryUtils.getModuleFromLabelOrDescription(commandString, rule,
                     moduleBuilderHandler.getModuleType());
+
+            if (module == null) {
+                VoiceManagerUtils.say(TTSConstants.MODULE_NOT_FOUND);
+                return null;
+            }
 
             moduleBuilderHandler.createFromModule(module).withId(module.getId());
             handlerState.updateConfirmationState(ConfirmationState.CONFIRMING);
@@ -208,6 +231,11 @@ public class RuleEditingController implements ICommandHandler {
         }
 
         if (!moduleBuilderHandler.hasLabel()) {
+            if (RuleRegistryUtils.moduleLabelAlreadyExists(ruleRegistry.get(ruleId), commandString,
+                    moduleBuilderHandler.getModuleType())) {
+                VoiceManagerUtils.say(TTSConstants.LABEL_ALREADY_EXISTS);
+                return null;
+            }
             moduleBuilderHandler.withLabel(commandString);
             VoiceManagerUtils.say(TTSConstants.ADD_CONFIGURATION);
             return null;
@@ -231,8 +259,10 @@ public class RuleEditingController implements ICommandHandler {
             return null;
         }
 
-        if (moduleBuilderHandler.canAddConfiguration(configuration.getType()))
+        if (moduleBuilderHandler.canAddConfiguration(configuration.getType())) {
             moduleBuilderHandler.withConfiguration(configuration);
+            VoiceManagerUtils.say(TTSConstants.OPERATION_SUCCESSFUL);
+        }
 
         return null;
     }
@@ -253,6 +283,25 @@ public class RuleEditingController implements ICommandHandler {
         Instructions.enterRuleName();
     }
 
+    public void removeBuilderStatus() {
+        if (!moduleBuilderHandler.isCreated()) {
+            StatusReport.editModuleWaitingForLabel();
+            return;
+        }
+
+        StatusReport.removeModuleDeleteConfirmation(moduleBuilderHandler.label);
+    }
+
+    public void removeBuilderInstruction(String commandString) {
+        if (!moduleBuilderHandler.isCreated()) {
+            Instructions.editModuleWaitingForLabel(commandString, ruleRegistry.get(ruleId),
+                    moduleBuilderHandler.getModuleType());
+            return;
+        }
+
+        Instructions.removeModuleDeleteConfirmation();
+    }
+
     public void editBuilderStatus() {
         if (!moduleBuilderHandler.isCreated()) {
             StatusReport.editModuleWaitingForLabel();
@@ -262,9 +311,10 @@ public class RuleEditingController implements ICommandHandler {
         StatusReport.waitingForModuleConfiguration();
     }
 
-    public void editBuilderInstruction() {
+    public void editBuilderInstruction(String commandString) {
         if (!moduleBuilderHandler.isCreated()) {
-            StatusReport.waitingForLabel();
+            Instructions.editModuleWaitingForLabel(commandString, ruleRegistry.get(ruleId),
+                    moduleBuilderHandler.getModuleType());
             return;
         }
 

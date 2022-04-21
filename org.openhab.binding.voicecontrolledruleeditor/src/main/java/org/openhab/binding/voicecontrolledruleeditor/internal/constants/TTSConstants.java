@@ -24,9 +24,11 @@ public class TTSConstants {
     public static String TRIGGER_TYPE_NOT_FOUND = "Trigger type %s not found";
     public static String CONDITION_TYPE_NOT_FOUND = "Condition type %s not found";
     public static String ACTION_TYPE_NOT_FOUND = "Action type %s not found";
-    public static String SELECT_TRIGGER_TYPE = "Please select trigger type";
-    public static String SELECT_ACTION_TYPE = "Please select action type";
-    public static String SELECT_CONDITION_TYPE = "Please select condition type";
+    public static String SELECT_MODULE_TYPE = "Please select %s type";
+    public static String INPUT_MODULE_LABEL = "Please input %s label";
+    public static String MODULE_NOT_FOUND = "Module not found";
+    public static String LABEL_ALREADY_EXISTS = "Label already exists";
+
     public static String CONFIGURATION_NOT_FOUND = "Configuration %s not found";
     public static String ADD_CONFIGURATION = "Please add configuration. When finished say \"complete\"";
     public static String MODULE_CREATED = "Module %s created";
@@ -34,6 +36,7 @@ public class TTSConstants {
     public static String MODULE_DELETE_CONFIRMATION = "Module %s will be deleted, this action is permament would you like to confirm?";
     public static String MODULE_DELETED = "Module %s deleted";
     public static String OPERATION_SUCCESSFUL = "Operation successful";
+    public static String TYPE_INVALID = "Type invalid";
 
     // Status reporting
     public static String STATUS_WAITING_FOR_COMMAND = "Waiting for command";
@@ -64,4 +67,5 @@ public class TTSConstants {
 
     public static String INSTRUCTION_LIST_MISSING_CONFIGURATIONS = "Missing configurations are, %s";
     public static String INSTRUCTION_LIST_OF_AVAILABLE_CONFIGURATIONS = "Available configurations are, %s";
+    public static String INSTRUCTION_CONFIRM_OR_DENY = "Confirm or deny";
 }

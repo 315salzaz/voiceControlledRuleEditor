@@ -168,4 +168,22 @@ public class RuleRegistryUtils {
 
         return null;
     }
+
+    public static boolean moduleLabelAlreadyExists(Rule rule, String label, ModuleType moduleType) {
+        String labelWithoutSpaces = StringUtils.withoutSpaces(label);
+
+        switch (moduleType) {
+            case ACTION:
+                return rule.getActions().stream()
+                        .anyMatch(a -> StringUtils.withoutSpaces(a.getLabel()).equalsIgnoreCase(labelWithoutSpaces));
+            case CONDITION:
+                return rule.getConditions().stream()
+                        .anyMatch(c -> StringUtils.withoutSpaces(c.getLabel()).equalsIgnoreCase(labelWithoutSpaces));
+            case TRIGGER:
+                return rule.getTriggers().stream()
+                        .anyMatch(t -> StringUtils.withoutSpaces(t.getLabel()).equalsIgnoreCase(labelWithoutSpaces));
+        }
+
+        return false;
+    }
 }
