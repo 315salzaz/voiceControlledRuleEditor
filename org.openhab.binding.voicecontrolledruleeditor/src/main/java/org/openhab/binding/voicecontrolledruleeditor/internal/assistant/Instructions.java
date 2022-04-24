@@ -16,6 +16,7 @@ public class Instructions {
     }
 
     public static void waitingForCommand() {
+        // 315salzaz add rule actions commands
         VoiceManagerUtils.say(TTSConstants.INSTRUCTION_WAITING_FOR_COMMAND);
     }
 
@@ -109,7 +110,7 @@ public class Instructions {
         VoiceManagerUtils.say(TTSConstants.INSTRUCTION_EDIT_MODULE_WAITING_FOR_LABEL);
     }
 
-    public static void removeModuleDeleteConfirmation() {
+    public static void confirmation() {
         VoiceManagerUtils.say(TTSConstants.INSTRUCTION_CONFIRM_OR_DENY);
     }
 }

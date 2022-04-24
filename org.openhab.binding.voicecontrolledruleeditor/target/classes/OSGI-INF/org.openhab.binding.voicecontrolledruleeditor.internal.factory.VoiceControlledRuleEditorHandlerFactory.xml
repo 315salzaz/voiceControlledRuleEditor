@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.4.0" name="org.openhab.binding.voicecontrolledruleeditor.internal.factory.VoiceControlledRuleEditorHandlerFactory" configuration-pid="binding.voicecontrolledruleeditor" init="5">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.4.0" name="org.openhab.binding.voicecontrolledruleeditor.internal.factory.VoiceControlledRuleEditorHandlerFactory" configuration-pid="binding.voicecontrolledruleeditor" init="6">
   <service>
     <provide interface="org.openhab.core.thing.binding.ThingHandlerFactory"/>
   </service>
@@ -8,5 +8,6 @@
   <reference name="$002" interface="org.openhab.core.thing.ThingRegistry" parameter="2"/>
   <reference name="$003" interface="org.openhab.core.items.ItemRegistry" parameter="3"/>
   <reference name="$004" interface="org.openhab.core.audio.AudioManager" parameter="4"/>
+  <reference name="$005" interface="org.openhab.core.automation.RuleManager" parameter="5"/>
   <implementation class="org.openhab.binding.voicecontrolledruleeditor.internal.factory.VoiceControlledRuleEditorHandlerFactory"/>
 </scr:component>

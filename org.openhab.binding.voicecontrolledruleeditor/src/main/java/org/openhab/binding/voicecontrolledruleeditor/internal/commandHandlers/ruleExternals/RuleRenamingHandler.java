@@ -13,6 +13,7 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.st
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleRegistryUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
 import org.openhab.core.automation.Rule;
 import org.openhab.core.automation.RuleRegistry;
@@ -46,7 +47,8 @@ public class RuleRenamingHandler implements ICommandHandler {
     }
 
     public HandleCommandResult handleOldNameInputed(String ruleName) {
-        boolean doesRuleExist = ruleRegistry.getAll().stream().anyMatch((rule) -> ruleName.equals(rule.getName()));
+        // 315salzaz This should actually get rule rather that bool and use it
+        boolean doesRuleExist = null != RuleRegistryUtils.getRuleFromName(ruleName);
 
         if (!doesRuleExist) {
             VoiceManagerUtils.say(String.format(TTSConstants.RULE_NOT_FOUND, ruleName));
@@ -60,6 +62,7 @@ public class RuleRenamingHandler implements ICommandHandler {
     }
 
     public HandleCommandResult handleNewNameInputed(String ruleName) {
+        // 315salzaz fix all of this!!!
         boolean isNameValid = !ruleRegistry.getAll().stream().anyMatch((rule) -> ruleName.equals(rule.getName()));
 
         if (!isNameValid) {

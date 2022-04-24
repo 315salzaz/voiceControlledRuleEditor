@@ -15,7 +15,19 @@ import org.openhab.core.automation.util.RuleBuilder;
 public class RuleRegistryUtils {
     private static RuleRegistry ruleRegistry;
 
-    private static Rule getRuleFromName(String expression) {
+    public static void Prepare(RuleRegistry ruleRegistry) {
+        if (RuleRegistryUtils.ruleRegistry == null) {
+            RuleRegistryUtils.ruleRegistry = ruleRegistry;
+        }
+    }
+
+    public static Rule deleteRule(String ruleId) {
+        var rule = ruleRegistry.remove(ruleId);
+        return rule;
+    }
+
+    // 315salzaz THIS SHOULD NOT BE USED WHEN CHECKING FOR EQUALS. WWWWWWWWWWWTTTTTTTTTTTFFFFFFFFFFFF DID I DO?
+    public static Rule getRuleFromName(String expression) {
         String[] names = ruleRegistry.getAll().stream().map(r -> StringUtils.withoutSpaces(r.getName()))
                 .toArray(String[]::new);
         String foundName = StringUtils.longestMatching(names, StringUtils.withoutSpaces(expression), true);

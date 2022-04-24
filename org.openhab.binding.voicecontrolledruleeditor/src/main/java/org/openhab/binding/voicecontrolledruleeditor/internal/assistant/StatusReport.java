@@ -2,6 +2,7 @@ package org.openhab.binding.voicecontrolledruleeditor.internal.assistant;
 
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleManagerUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
 
 public class StatusReport {
@@ -63,5 +64,31 @@ public class StatusReport {
 
     public static void removeModuleDeleteConfirmation(String moduleLabel) {
         VoiceManagerUtils.say(String.format(TTSConstants.MODULE_DELETE_CONFIRMATION, moduleLabel));
+    }
+
+    public static void deleteRuleWaitingForName() {
+        VoiceManagerUtils.say(TTSConstants.STATUS_DELETE_RULE_WAITING_FOR_NAME);
+    }
+
+    public static void deleteRuleWaitingForConfirmation(String ruleName) {
+        VoiceManagerUtils.say(String.format(TTSConstants.STATUS_DELETE_RULE_WAITING_FOR_CONFIRMATION, ruleName));
+    }
+
+    public static void runRuleName() {
+        VoiceManagerUtils.say(TTSConstants.STATUS_RUN_RULE_NAME_STATUS);
+    }
+
+    public static void runRuleConfirmation(String ruleName) {
+        VoiceManagerUtils.say(String.format(TTSConstants.STATUS_RUN_RULE_CONFIRMATION, ruleName));
+    }
+
+    public static void ruleEnablementName() {
+        VoiceManagerUtils.say(TTSConstants.STATUS_RULE_ENABLEMENT_NAME);
+    }
+
+    public static void ruleEnablementConfirmation(String ruleName, Boolean newState) {
+        String newStateString = RuleManagerUtils.getRuleStateStringValue(newState);
+        VoiceManagerUtils
+                .say(String.format(TTSConstants.STATUS_RULE_ENABLEMENT_CONFIRMATION, ruleName, newStateString));
     }
 }

@@ -20,9 +20,12 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.Us
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.AudioManagerUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ItemUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleManagerUtils;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleRegistryUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.ThingUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
 import org.openhab.core.audio.AudioManager;
+import org.openhab.core.automation.RuleManager;
 import org.openhab.core.automation.RuleRegistry;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.thing.ChannelUID;
@@ -46,14 +49,17 @@ public class VoiceControlledRuleEditorHandler extends BaseThingHandler {
     private RuleRegistry ruleRegistry;
 
     public VoiceControlledRuleEditorHandler(Thing thing, VoiceManager voiceManager, RuleRegistry ruleRegistry,
-            ItemRegistry itemRegistry, ThingRegistry thingRegistry, AudioManager audioManager) {
+            ItemRegistry itemRegistry, ThingRegistry thingRegistry, AudioManager audioManager,
+            RuleManager ruleManager) {
         super(thing);
 
         this.ruleRegistry = ruleRegistry;
+        RuleRegistryUtils.Prepare(ruleRegistry);
         VoiceManagerUtils.Prepare(voiceManager);
         AudioManagerUtils.Prepare(audioManager);
         ThingUtils.Prepare(thingRegistry);
         ItemUtils.Prepare(itemRegistry);
+        RuleManagerUtils.Prepare(ruleManager);
     }
 
     private class IdentifiedCommand {

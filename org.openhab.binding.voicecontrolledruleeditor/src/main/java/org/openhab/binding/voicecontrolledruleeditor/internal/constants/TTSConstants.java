@@ -8,6 +8,8 @@ public class TTSConstants {
     public static String RULE_NOT_FOUND = "Rule %s not found. Please try again.";
     public static String RULE_CREATED_START_EDITING_CONFIRMATION = "Rule created. Would you like to start editing it?";
     public static String DELETE_RULE_NAME = "Which rule would you like to delete?";
+    public static String DELETE_RULE_NAME_CONFIRMATION = "Rule %s will be deleted, would you like to confirm?";
+    public static String RULE_DELETED = "Rule %s deleted";
     public static String EDITTING_RULE_NAME = "Which rule would you like to edit?";
     public static String RENAME_OLD_RULE_NAME = "Which rule would you like to rename?";
     public static String RENAMING_OLD_RULE = "Renaming rule %s.";
@@ -16,6 +18,11 @@ public class TTSConstants {
     public static String SELECT_EDITING_TYPE = "Would you like to edit action, trigger or conditon?";
     public static String RULE_EDITING_CANCELED = "Rule editing canceled";
     public static String EDIT_RULE_WAITING_FOR_EDIT_TYPE = "Please select rule editing type";
+    public static String RUN_RULE_INPUT_NAME = "Which rule would you like to run?";
+    public static String RUN_RULE_CONFIRM = "Run rule %s ignoring conditions. Would you like to confirm?";
+    public static String RULE_ENABLEMENT_INPUT_NAME = "Which rule's state would you like to change?";
+    public static String RULE_ENABLEMENT_CONFIRMATION = "Change rule %s state to %s. Would you like to confirm?";
+    public static String RULE_STATE_CHANGED = "Rule %s %s";
 
     public static String ADD_LABEL = "Please add label";
     public static String ERROR_OCCURED = "An error has occured.";
@@ -37,6 +44,7 @@ public class TTSConstants {
     public static String MODULE_DELETED = "Module %s deleted";
     public static String OPERATION_SUCCESSFUL = "Operation successful";
     public static String TYPE_INVALID = "Type invalid";
+    public static String NOT_ALL_REQUIRED_CONFIGURATIONS_FILLED_IN = "Warning, not all required configurations are filled in.";
 
     // Status reporting
     public static String STATUS_WAITING_FOR_COMMAND = "Waiting for command";
@@ -48,10 +56,16 @@ public class TTSConstants {
     public static String STATUS_RENAME_RULE_NEW_NAME_CONFIRMATION = CONFIRM_NEW_RULE_NAME;
     public static String STATUS_EDIT_RULE_NAME_INPUT = EDITTING_RULE_NAME;
     public static String STATUS_EDIT_RULE_WAITING_FOR_EDIT_TYPE = EDIT_RULE_WAITING_FOR_EDIT_TYPE;
+    public static String STATUS_DELETE_RULE_WAITING_FOR_NAME = DELETE_RULE_NAME;
+    public static String STATUS_DELETE_RULE_WAITING_FOR_CONFIRMATION = DELETE_RULE_NAME_CONFIRMATION;
 
     public static String STATUS_EDIT_MODULE_WAITING_FOR_MODULE_TYPE = "Waiting for %s module type";
     public static String STATUS_EDIT_MODULE_WAITING_FOR_LABEL = "Waiting for label";
     public static String STATUS_EDIT_MODULE_WAITING_FOR_CONFIGURATION = "Waiting for configuration";
+    public static String STATUS_RUN_RULE_NAME_STATUS = RUN_RULE_INPUT_NAME;
+    public static String STATUS_RUN_RULE_CONFIRMATION = RUN_RULE_CONFIRM;
+    public static String STATUS_RULE_ENABLEMENT_NAME = RULE_ENABLEMENT_INPUT_NAME;
+    public static String STATUS_RULE_ENABLEMENT_CONFIRMATION = RULE_ENABLEMENT_CONFIRMATION;
 
     // Instructions
     public static String INSTRUCTION_WAITING_FOR_COMMAND = "You can: create new rule, rename rule or begin editing";

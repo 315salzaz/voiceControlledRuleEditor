@@ -13,6 +13,9 @@ public class UserInputs {
     public static String[] BEGIN_EDITING = { "begin", "editing" };
     public static String[] CONFIRM_ARRAY = { "okay", "confirm", "yes" };
     public static String[] DENY_ARRAY = { "deny", "denied", "reject", "no", "refuse" };
+    public static String RUN_RULE = "run a rule";
+    public static String CHANGE_RULE_STATE = "change rule state";
+
     public static String CANCEL = "cancel";
     public static String BACK = "back";
 

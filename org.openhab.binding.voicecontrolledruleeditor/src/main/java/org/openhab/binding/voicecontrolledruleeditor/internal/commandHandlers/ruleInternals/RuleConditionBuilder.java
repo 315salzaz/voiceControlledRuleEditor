@@ -66,6 +66,7 @@ public class RuleConditionBuilder extends AbstractModuleBuilder {
             type = ModuleTypeValue.CONDITION_NOT_HOLIDAY.value;
             availableConfigurations = getAvailableConfigurationTypes(ModuleTypeValue.CONDITION_NOT_HOLIDAY);
         } else if (UserInputs.contains(UserInputs.CONDITION_DAY_OF_WEEK, commandString)) {
+            // 315salzaz tell me how list weeks
             type = ModuleTypeValue.CONDITION_DAY_OF_WEEK.value;
             availableConfigurations = getAvailableConfigurationTypes(ModuleTypeValue.CONDITION_DAY_OF_WEEK);
         } else {

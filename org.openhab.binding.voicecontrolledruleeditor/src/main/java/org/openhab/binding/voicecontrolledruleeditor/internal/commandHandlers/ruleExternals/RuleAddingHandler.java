@@ -13,6 +13,7 @@ import org.openhab.binding.voicecontrolledruleeditor.internal.commandHandlers.st
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.Enums.BaseHandlerState;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.TTSConstants;
 import org.openhab.binding.voicecontrolledruleeditor.internal.constants.UserInputs;
+import org.openhab.binding.voicecontrolledruleeditor.internal.utils.RuleRegistryUtils;
 import org.openhab.binding.voicecontrolledruleeditor.internal.utils.VoiceManagerUtils;
 import org.openhab.core.automation.Rule;
 import org.openhab.core.automation.RuleRegistry;
@@ -50,6 +51,7 @@ public class RuleAddingHandler implements ICommandHandler {
         return String.format("VoiceControlled.Rule.%d", currentIndex);
     }
 
+    // 315salzaz transfer to ruleRegistry utils?
     private void addRule(String ruleName) {
         currentRuleId = getNextUID();
 
@@ -58,7 +60,7 @@ public class RuleAddingHandler implements ICommandHandler {
     }
 
     public HandleCommandResult handleNameInputed(String ruleName) {
-        boolean isRuleNameValid = !ruleRegistry.getAll().stream().anyMatch((rule) -> ruleName.equals(rule.getName()));
+        boolean isRuleNameValid = null == RuleRegistryUtils.getRuleFromName(ruleName);
 
         if (!isRuleNameValid) {
             VoiceManagerUtils.say(String.format(TTSConstants.RULE_ALREADY_EXISTS, ruleName));
@@ -106,6 +108,7 @@ public class RuleAddingHandler implements ICommandHandler {
     }
 
     public void nameInputInstruction() {
+        // 315salzaz read out rule names?
         Instructions.enterRuleName();
     }
 

@@ -222,7 +222,6 @@ public class RuleEditingController implements ICommandHandler {
     }
 
     public HandleCommandResult handleCreateBuilderCommand(String commandString) {
-        // 315salzaz I'd like this to be like rule naming (with confirmation)
         if (!moduleBuilderHandler.isCreated()) {
             moduleBuilderHandler.createWithTypeFromCommand(commandString);
             if (moduleBuilderHandler.isCreated())
@@ -248,7 +247,8 @@ public class RuleEditingController implements ICommandHandler {
 
             ruleRegistry.update(rule);
             handlerState = new RuleEditWaitingForEditTypeState(this);
-            VoiceManagerUtils.say(TTSConstants.EDIT_RULE_WAITING_FOR_EDIT_TYPE);
+            VoiceManagerUtils.say(TTSConstants.NOT_ALL_REQUIRED_CONFIGURATIONS_FILLED_IN
+                    + String.format(TTSConstants.MODULE_CREATED, moduleBuilderHandler.label));
             return null;
         }
 
@@ -299,7 +299,7 @@ public class RuleEditingController implements ICommandHandler {
             return;
         }
 
-        Instructions.removeModuleDeleteConfirmation();
+        Instructions.confirmation();
     }
 
     public void editBuilderStatus() {

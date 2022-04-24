@@ -20,6 +20,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.voicecontrolledruleeditor.internal.VoiceControlledRuleEditorHandler;
 import org.openhab.core.audio.AudioManager;
+import org.openhab.core.automation.RuleManager;
 import org.openhab.core.automation.RuleRegistry;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.thing.Thing;
@@ -49,16 +50,19 @@ public class VoiceControlledRuleEditorHandlerFactory extends BaseThingHandlerFac
     private final ThingRegistry thingRegistry;
     private final ItemRegistry itemRegistry;
     private final AudioManager audioManager;
+    private final RuleManager ruleManager;
 
     @Activate
     public VoiceControlledRuleEditorHandlerFactory(@Reference VoiceManager voiceManager,
             @Reference RuleRegistry ruleRegistry, @Reference ThingRegistry thingRegistry,
-            @Reference ItemRegistry itemRegistry, @Reference AudioManager audioManager) {
+            @Reference ItemRegistry itemRegistry, @Reference AudioManager audioManager,
+            @Reference RuleManager ruleManager) {
         this.voiceManager = voiceManager;
         this.ruleRegistry = ruleRegistry;
         this.thingRegistry = thingRegistry;
         this.itemRegistry = itemRegistry;
         this.audioManager = audioManager;
+        this.ruleManager = ruleManager;
     }
 
     @Override
@@ -72,7 +76,7 @@ public class VoiceControlledRuleEditorHandlerFactory extends BaseThingHandlerFac
 
         if (THING_TYPE_SAMPLE.equals(thingTypeUID)) {
             return new VoiceControlledRuleEditorHandler(thing, voiceManager, ruleRegistry, itemRegistry, thingRegistry,
-                    audioManager);
+                    audioManager, ruleManager);
         }
 
         return null;

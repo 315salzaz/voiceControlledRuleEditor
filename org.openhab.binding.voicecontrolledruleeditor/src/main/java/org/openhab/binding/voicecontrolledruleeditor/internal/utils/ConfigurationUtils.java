@@ -150,7 +150,7 @@ public class ConfigurationUtils {
     private static ConfigurationResult getConfigurationResult(ConfigurationType configurationType, String commandString,
             String userInputConst, ConfigurationResult.ConfigurationAction configurationAction) {
         int splitIndex = commandString.indexOf(userInputConst) + userInputConst.length();
-        // 315salzaz what is valueString if nothing is inputed as value?
+        // 315salzaz needs errors (e.g. for rule id)
         String valueString = commandString.substring(splitIndex);
         Object value;
         switch (configurationType) {
