@@ -44,7 +44,7 @@ public class DefaultController implements ICommandHandler {
         if (UserInputs.isEquals(UserInputs.CONFIRM_ARRAY, commandString)) {
             RuleManagerUtils.runRule(rule.getUID());
             handlerState = new DefaultControllerBaseState(this);
-            VoiceManagerUtils.say(TTSConstants.RUN_RULE_INPUT_NAME);
+            VoiceManagerUtils.say(String.format(TTSConstants.RUN_RULE_SUCCESSFUL, rule.getName()));
             return null;
         }
 
@@ -127,6 +127,7 @@ public class DefaultController implements ICommandHandler {
     }
 
     public void waitingForCommandInstruction() {
+        // 315salza missing run and change state
         Instructions.waitingForCommand();
     }
 

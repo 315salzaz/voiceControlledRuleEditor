@@ -16,7 +16,7 @@ public class RuleManagerUtils {
     }
 
     public static void changeRuleState(String ruleId) {
-        ruleManager.setEnabled(ruleId, getRuleState(ruleId));
+        ruleManager.setEnabled(ruleId, !getRuleState(ruleId));
     }
 
     public static boolean getRuleState(String ruleId) {

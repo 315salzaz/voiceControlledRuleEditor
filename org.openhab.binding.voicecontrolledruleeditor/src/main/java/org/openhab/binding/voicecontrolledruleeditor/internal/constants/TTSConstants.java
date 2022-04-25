@@ -20,6 +20,7 @@ public class TTSConstants {
     public static String EDIT_RULE_WAITING_FOR_EDIT_TYPE = "Please select rule editing type";
     public static String RUN_RULE_INPUT_NAME = "Which rule would you like to run?";
     public static String RUN_RULE_CONFIRM = "Run rule %s ignoring conditions. Would you like to confirm?";
+    public static String RUN_RULE_SUCCESSFUL = "Rule %s actions successfully performed";
     public static String RULE_ENABLEMENT_INPUT_NAME = "Which rule's state would you like to change?";
     public static String RULE_ENABLEMENT_CONFIRMATION = "Change rule %s state to %s. Would you like to confirm?";
     public static String RULE_STATE_CHANGED = "Rule %s %s";

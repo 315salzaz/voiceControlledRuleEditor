@@ -1,6 +1,0 @@
-Add TAC removal
-Add TAC editing
-Status reports
-Back, cancel
-Add reader
-"undo" for where string longest match is used

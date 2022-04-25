@@ -9,6 +9,7 @@ org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\UsersComm
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\RuleManagerUtils.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleDelete\RuleDeleteWaitingForNameConfirmationState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\VoiceControlledRuleEditorHandler.class
+META-INF\MANIFEST.MF
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\ruleEdit\RuleEditEditModuleState.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\IBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\VoiceManagerUtils.class
@@ -27,6 +28,7 @@ org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInter
 org\openhab\binding\voicecontrolledruleeditor\internal\factory\VoiceControlledRuleEditorHandlerFactory.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleActionBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\utils\ConfigurationUtils.class
+NOTICE
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ruleInternals\RuleConditionBuilder.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\ICommandHandler.class
 org\openhab\binding\voicecontrolledruleeditor\internal\commandHandlers\states\defaultController\DefaultControllerRuleEnablementConfirmationState.class

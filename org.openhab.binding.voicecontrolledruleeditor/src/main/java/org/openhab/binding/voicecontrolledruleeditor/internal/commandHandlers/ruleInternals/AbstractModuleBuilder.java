@@ -49,6 +49,10 @@ public abstract class AbstractModuleBuilder {
         return missingPropertiesStream;
     }
 
+    public boolean requiredConfigurationsFilledIn() {
+        return getMissingAvailableConfigurations().length == 0;
+    }
+
     public abstract Enums.ModuleType getModuleType();
 
     public abstract Module build(String id);

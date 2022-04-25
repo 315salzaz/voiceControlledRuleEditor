@@ -247,8 +247,12 @@ public class RuleEditingController implements ICommandHandler {
 
             ruleRegistry.update(rule);
             handlerState = new RuleEditWaitingForEditTypeState(this);
-            VoiceManagerUtils.say(TTSConstants.NOT_ALL_REQUIRED_CONFIGURATIONS_FILLED_IN
-                    + String.format(TTSConstants.MODULE_CREATED, moduleBuilderHandler.label));
+            var stringFormat = TTSConstants.MODULE_CREATED;
+            if (moduleBuilderHandler.requiredConfigurationsFilledIn()) {
+                stringFormat = TTSConstants.NOT_ALL_REQUIRED_CONFIGURATIONS_FILLED_IN + " " + stringFormat;
+            }
+
+            VoiceManagerUtils.say(String.format(stringFormat, moduleBuilderHandler.label));
             return null;
         }
 
